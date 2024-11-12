@@ -8,7 +8,7 @@ const App = () => {
     // Set a timeout to hide the splash screen after 3 seconds (3000 milliseconds)
     const timer = setTimeout(() => {
       SplashScreen.hide();
-    }, 10000);
+    }, 3000);
 
     // Cleanup function to clear the timeout if the component unmounts
     return () => clearTimeout(timer);
