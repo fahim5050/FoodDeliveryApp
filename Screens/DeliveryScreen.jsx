@@ -6,6 +6,7 @@ import MapView, { Marker } from 'react-native-maps';
 
 const DeliveryScreen = () => {
     const restaurant = featured?.restaurants?.[1];
+    // const restaurant = useSelector(selectRestaurant)
     const navigation = useNavigation();
 
     // // Use a fallback location if `restaurant` data is unavailable

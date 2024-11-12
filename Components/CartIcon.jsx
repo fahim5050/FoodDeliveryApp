@@ -1,12 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+// import {useSelector} from 'react-redux';
+// import { selectCartItemsById } from '../Slices/CartSlice';
+
 
 const CartIcon = () => {
   const navigation = useNavigation();
+//   const totalItems=useSelector(state=>selectCartItemsById(state,item.id));
+//   const cartItems = useSelector((state) => state.cart?.items || []);
+// if (!cartItems.length ) return null;
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={()=>navigation.navigate('Cart')} style={styles.cartButton}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Cart')}
+        style={styles.cartButton}>
         <View style={styles.cartCount}>
           <Text style={styles.cartCountText}>7</Text>
         </View>
@@ -36,7 +45,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
     shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,

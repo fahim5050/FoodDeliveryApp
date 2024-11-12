@@ -7,28 +7,34 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import * as Icon from 'react-native-feather';
 import DishRow from '../Components/DishRow';
 import CartIcon from '../Components/CartIcon';
+import {useDispatch} from 'react-redux';
+import {setRestaurant} from '../Slices/RestaurantSlice';
 
 const RestaurantScreen = () => {
-  const { params } = useRoute();
+  const {params} = useRoute();
   const item = params;
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (item && item.id) {
+      dispatch(setRestaurant(item));
+    }
+  }, [dispatch, item]);
   return (
     <View style={styles.container}>
       <CartIcon />
-      <StatusBar barStyle={"light-content"} hidden={true}/>
+      <StatusBar barStyle={'light-content'} hidden={true} />
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={item.image} />
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
+            style={styles.backButton}>
             <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
           </TouchableOpacity>
         </View>
@@ -40,7 +46,8 @@ const RestaurantScreen = () => {
                 <Icon.Star fill="gold" stroke="gold" height={15} width={15} />
                 <Text style={styles.ratingText}>{item.star}</Text>
                 <Text style={styles.review}>
-                  ({item.review} reviews) - <Text style={styles.category}>{item.category}</Text>
+                  ({item.review} reviews) -{' '}
+                  <Text style={styles.category}>{item.category}</Text>
                 </Text>
               </View>
               <View style={styles.locationContainer}>
@@ -54,7 +61,7 @@ const RestaurantScreen = () => {
         <View style={styles.menuContainer}>
           <Text style={styles.menuTitle}>Menu</Text>
           {item.dishes.map((dish, index) => (
-            <DishRow item={{ ...dish }} key={index} />
+            <DishRow item={{...dish}} key={index} />
           ))}
         </View>
       </ScrollView>

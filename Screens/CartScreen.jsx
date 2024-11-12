@@ -10,10 +10,12 @@ import {
 import { featured } from '../constants';
 import * as Icon from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { selectRestaurant } from '../Slices/RestaurantSlice';
 
 const CartScreen = () => {
   const navigation = useNavigation();
-  const restaurant = featured.restaurants[1];
+  const restaurant = useSelector(selectRestaurant)
 
   return (
     <View style={styles.container}>

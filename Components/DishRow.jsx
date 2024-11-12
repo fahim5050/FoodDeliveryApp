@@ -1,8 +1,17 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import * as Icon from 'react-native-feather';
+import {useDispatch} from 'react-redux';
+import {addToCart, removeFromCart} from '../Slices/CartSlice';
 
-const DishRow = ({ item }) => {
+const DishRow = ({item}) => {
+  const dispatch = useDispatch();
+  const handleDecrease = () => {
+    dispatch(removeFromCart({id:item.id}))
+  };
+  const handleIncrease = () => {
+    dispatch(addToCart({...item}));
+  };
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={item.image} />
@@ -14,12 +23,26 @@ const DishRow = ({ item }) => {
         <View style={styles.priceQuantityContainer}>
           <Text style={styles.priceText}>${item.price}</Text>
           <View style={styles.quantityContainer}>
-            <TouchableOpacity style={styles.iconButton}>
-              <Icon.Minus strokeWidth={2} height={20} width={20} stroke="white" />
+            <TouchableOpacity
+              onPress={() => handleDecrease}
+              style={styles.iconButton}>
+              <Icon.Minus
+                strokeWidth={2}
+                height={20}
+                width={20}
+                stroke="white"
+              />
             </TouchableOpacity>
             <Text style={styles.quantityText}>5</Text>
-            <TouchableOpacity style={styles.iconButton}>
-              <Icon.Plus strokeWidth={2} height={20} width={20} stroke="white" />
+            <TouchableOpacity
+              onPress={() => handleIncrease}
+              style={styles.iconButton}>
+              <Icon.Plus
+                strokeWidth={2}
+                height={20}
+                width={20}
+                stroke="white"
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -42,7 +65,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 10,
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 4,
     elevation: 3,
   },

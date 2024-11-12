@@ -9,59 +9,67 @@ import {
 } from 'react-native';
 import React from 'react';
 import * as Icon from 'react-native-feather';
-import {themeColors} from '../Theme/Theme';
 import Categories from '../Components/Categories';
 import { featured } from '../constants';
 import FeatureRow from '../Components/FeatureRow';
-
+import Header from '../Components/Header/Header';
 
 const HomeScreen = () => {
   return (
-    <SafeAreaView style={styles.HomeContainer}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
-      {/* search bar */}
-      <View style={styles.searchBar}>
-        <View style={styles.searchBarIcon}>
-          <Icon.Search stroke="gray" width="25" height="25" />
-          <TextInput
-            placeholder="Search for bite  food"
-            style={styles.textInput}
-          />
-          <View style={styles.location}>
-            <Icon.MapPin stroke="gray" height="20" width="20" />
-            <Text>Deans Peshawar</Text>
+      {/* Header with no padding */}
+      <View style={styles.headerContainer}>
+        <Header />
+      </View>
+
+      {/* Main content with padding */}
+      <View style={styles.mainContent}>
+        {/* Search Bar */}
+        <View style={styles.searchBar}>
+          <View style={styles.searchBarIcon}>
+            <Icon.Search stroke="gray" width="25" height="25" />
+            <TextInput
+              placeholder="Search for bite food"
+              style={styles.textInput}
+            />
+            <View style={styles.location}>
+              <Icon.MapPin stroke="gray" height="20" width="20" />
+              <Text>Deans Peshawar</Text>
+            </View>
+          </View>
+          <View style={styles.sliderIcon}>
+            <Icon.Sliders
+              stroke="white"
+              height="25"
+              width="25"
+              strokeWidth={2.5}
+            />
           </View>
         </View>
-        <View style={styles.sliderIcon}>
-          <Icon.Sliders
-            stroke="white"
-            height="25"
-            width="25"
-            strokeWidth={2.5}
-          />
-        </View>
+
+        {/* Scrollable Content */}
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          {/* Categories */}
+          <Categories />
+          {/* slider */}
+
+          {/* Featured Section */}
+          <View style={styles.featureContainer}>
+            {[featured, featured].map((item, index) => (
+              <FeatureRow
+                key={index}
+                title={item.title}
+                restaurants={item.restaurants}
+                description={item.description}
+              />
+            ))}
+          </View>
+        </ScrollView>
       </View>
-    {/* main */}
-    <ScrollView showsVerticalScrollIndicator={false}
-    contentContainerStyle={{paddingBottom:20}}>
-{/* categories */}
-<Categories/>
-{/* Featured section */}
-<View style={styles.featureContainer}>
-{
-  [featured,featured,featured].map((item,index)=>{
-    return(
-      <FeatureRow
-       key={index}
-       title={item.title}
-       restaurants={item.restaurants}
-       description={item.description}
-       />
-    )
-  })
-}
-</View>
-    </ScrollView>
     </SafeAreaView>
   );
 };
@@ -69,10 +77,15 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  HomeContainer: {
-    backgroundColor: 'white',
+  container: {
     flex: 1,
-    width: '100%',
+    backgroundColor: 'white',
+  },
+  headerContainer: {
+    padding: 0, // No padding for header
+  },
+  mainContent: {
+    padding: 15, // Padding for main content except header
   },
   searchBar: {
     flexDirection: 'row',
@@ -109,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#f97316",
   },
-  featureContainer:{
-marginTop:5,
-  }
+  featureContainer: {
+    marginTop: 5,
+  },
 });
