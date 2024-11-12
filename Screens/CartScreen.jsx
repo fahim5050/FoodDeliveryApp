@@ -15,7 +15,7 @@ import { selectRestaurant } from '../Slices/RestaurantSlice';
 
 const CartScreen = () => {
   const navigation = useNavigation();
-  const restaurant = useSelector(selectRestaurant)
+  const restaurant = featured.restaurants[1];
 
   return (
     <View style={styles.container}>
