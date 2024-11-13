@@ -1,18 +1,24 @@
-import {StyleSheet} from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
 import Navigation from './Navigation/Navigation';
-
-import {Provider} from 'react-redux';
-import {store} from './store';
+import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
+  useEffect(() => {
+    // Set a timeout to hide the splash screen after 3 seconds (3000 milliseconds)
+    const timer = setTimeout(() => {
+      SplashScreen.hide();
+    }, 3000);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <Provider store={store}>
-      <Navigation />
-    </Provider>
+    <Navigation />
   );
-};
+}
 
 export default App;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})
