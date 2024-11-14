@@ -10,6 +10,9 @@ import DeliveryScreen from '../Screens/DeliveryScreen';
 import AllRestaurant from '../Screens/AllRestaurant';
 import ProfileScreen from '../Screens/ProfileScreen/ProfileScreen.jsx';
 import NotificationScreen from '../Screens/NotificationScreen/NotificationScreen.jsx';
+import SubDishes from '../Components/Subdishes/Subdishes.jsx';
+import SignInScreen from '../Screens/SignInScreen/SignInScreen.jsx';
+import SignUpScreen from '../Screens/SignUpScreen/SignUpScreen.jsx';
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
   return (
@@ -17,7 +20,8 @@ const Navigation = () => {
       <Stack.Navigator screenOptions={{
         headerShown:false,
       }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="SignIn" component={SignInScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Restaurant" component={RestaurantScreen} />
       <Stack.Screen name="OrderPreparing" options={{presentation:'fullScreenModal'}} component={OrderPreparingScreen} />
       <Stack.Screen name="Cart" options={{presentation:'modal'}} component={CartScreen} />
@@ -25,6 +29,8 @@ const Navigation = () => {
       <Stack.Screen name="AllRestaurant" component={AllRestaurant} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Notifications" component={NotificationScreen} />
+      <Stack.Screen name="SubDishes" component={SubDishes} />
+      <Stack.Screen name="SignUp" component={SignUpScreen} />
     </Stack.Navigator>
     </NavigationContainer>
   )

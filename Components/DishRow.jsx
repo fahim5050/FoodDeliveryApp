@@ -1,28 +1,28 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import * as Icon from 'react-native-feather';
-import {useDispatch} from 'react-redux';
-import {addToCart, removeFromCart} from '../Slices/CartSlice';
+import {useNavigation} from '@react-navigation/native';
 
 const DishRow = ({item}) => {
-  const dispatch = useDispatch();
-  const handleDecrease = () => {
-    dispatch(removeFromCart({id:item.id}))
-  };
-  const handleIncrease = () => {
-    dispatch(addToCart({...item}));
-  };
+  const navigation = useNavigation();
+  const handlePress = () => {
+    navigation.navigate('SubDishes', {
+      subDishes: item.subDishes, // Pass the sub-dishes
+      dishName: item.name,       // Pass the dish name
+      dishImage: item.image,     // Pass the main dish image
+    });
+  }
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Image style={styles.image} source={item.image} />
       <View style={styles.detailsContainer}>
         <View style={styles.textContainer}>
           <Text style={styles.dishName}>{item.name}</Text>
           <Text style={styles.dishDescription}>{item.description}</Text>
         </View>
-        <View style={styles.priceQuantityContainer}>
-          <Text style={styles.priceText}>${item.price}</Text>
-          <View style={styles.quantityContainer}>
+        {/* <View style={styles.priceQuantityContainer}> */}
+        {/* <Text style={styles.priceText}>${item.price}</Text> */}
+        {/* <View style={styles.quantityContainer}>
             <TouchableOpacity
               onPress={() => handleDecrease}
               style={styles.iconButton}>
@@ -44,10 +44,10 @@ const DishRow = ({item}) => {
                 stroke="white"
               />
             </TouchableOpacity>
-          </View>
-        </View>
+          </View> */}
+        {/* </View> */}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 4,
     elevation: 3,
+
   },
   image: {
     height: 100,
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     paddingLeft: 8,
+   
   },
   textContainer: {
     paddingLeft: 3,

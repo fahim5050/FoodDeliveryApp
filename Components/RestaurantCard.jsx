@@ -7,17 +7,16 @@ import {
 } from 'react-native';
 import React from 'react';
 import * as Icon from 'react-native-feather';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const RestaurantCard = ({item}) => {
-    const navigation=useNavigation();
+  const navigation = useNavigation();
   // Example variable height for image based on item properties
-  const imageHeight = item.large ? 120 : 80; // Adjust size based on your condition
+  const imageHeight = item.large ? 160 : 120; // Adjust size based on your condition
 
   return (
     <TouchableWithoutFeedback
-    onPress={()=>navigation.navigate('Restaurant', {...item})}
-    >
+      onPress={() => navigation.navigate('Restaurant', {...item})}>
       <View style={styles.container}>
         <View style={[styles.imageContainer, {height: imageHeight}]}>
           <Image style={styles.image} source={item.image} />
@@ -34,9 +33,17 @@ const RestaurantCard = ({item}) => {
               </Text>
             </Text>
           </View>
-          <View style={{flexDirection:'row',alignItems:'center',gap:1, marginTop:5}}>
-            <Icon.MapPin color="gray" width="15" height="15"/>
-            <Text style={{color:'gray',fontSize:12}}>Nearby. {item.address}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 1,
+              marginTop: 5,
+            }}>
+            <Icon.MapPin color="gray" width="15" height="15" />
+            <Text style={{color: 'gray', fontSize: 12}}>
+              Nearby. {item.address}
+            </Text>
           </View>
         </View>
       </View>
@@ -56,8 +63,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    height: "auto",
-    width: 230, // Adjust width as needed
+    height: 230,
+    width: 260, // Adjust width as needed
     overflow: 'hidden',
   },
   imageContainer: {

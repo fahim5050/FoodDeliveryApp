@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import * as Icon from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native'; // Import the navigation hook
+import { CheckCircle, Truck, Package, XCircle, ArrowLeft } from 'react-native-feather';
 
 const notifications = [
   {
@@ -9,30 +10,36 @@ const notifications = [
     title: 'Order Confirmed',
     message: 'Your order has been confirmed and is being prepared.',
     time: '2 minutes ago',
-    icon: 'CheckCircle',
+    icon: CheckCircle,
+    color: 'green', // Example color
   },
   {
     id: 2,
     title: 'Out for Delivery',
     message: 'Your food is out for delivery and will arrive soon.',
     time: '20 minutes ago',
-    icon: 'Truck',
+    icon: Truck,
+    color: 'orange', // Example color
   },
   {
     id: 3,
     title: 'Order Delivered',
     message: 'Your order has been delivered successfully. Enjoy your meal!',
     time: '1 hour ago',
-    icon: 'Package',
+    icon: Package,
+    color: 'blue', // Example color
   },
   {
     id: 4,
     title: 'Order Cancelled',
     message: 'Unfortunately, your order has been cancelled. Please try again later.',
     time: '3 hours ago',
-    icon: 'XCircle',
+    icon: XCircle,
+    color: 'red', // Example color
   },
 ];
+
+// console.log(notifications.icon)
 
 const NotificationScreen = () => {
   const navigation = useNavigation(); // Use the navigation hook
@@ -50,17 +57,17 @@ const NotificationScreen = () => {
 
         {/* Notification List */}
         {notifications.map((notification) => (
-          <TouchableOpacity key={notification.id} style={styles.notificationContainer}>
-            <View style={styles.notificationIcon}>
-              {/* Dynamically render the icon based on the notification data */}
-              {/* <Icon[notification.icon] stroke="gray" width={24} height={24} /> */}
-            </View>
-            <View style={styles.notificationText}>
-              <Text style={styles.notificationTitle}>{notification.title}</Text>
-              <Text style={styles.notificationMessage}>{notification.message}</Text>
-              <Text style={styles.notificationTime}>{notification.time}</Text>
-            </View>
-          </TouchableOpacity>
+  <TouchableOpacity key={notification.id} style={styles.notificationContainer}>
+    <View style={styles.notificationIcon}>
+      {/* Use the icon directly */}
+      <notification.icon stroke={notification.color} width={24} height={24} />
+    </View>
+    <View style={styles.notificationText}>
+      <Text style={styles.notificationTitle}>{notification.title}</Text>
+      <Text style={styles.notificationMessage}>{notification.message}</Text>
+      <Text style={styles.notificationTime}>{notification.time}</Text>
+    </View>
+  </TouchableOpacity>
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -95,7 +102,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1, // Make the title take the remaining space
     textAlign: 'center', // Center the title horizontally
-    marginRight:30
+    marginRight:30,
+    color:'black',
   },
   notificationContainer: {
     flexDirection: 'row',

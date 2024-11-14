@@ -11,23 +11,18 @@ import React, {useEffect} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import * as Icon from 'react-native-feather';
 import DishRow from '../Components/DishRow';
-import CartIcon from '../Components/CartIcon';
-import {useDispatch} from 'react-redux';
-import {setRestaurant} from '../Slices/RestaurantSlice';
+// import CartIcon from '../Components/CartIcon';
+
 
 const RestaurantScreen = () => {
   const {params} = useRoute();
   const item = params;
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (item && item.id) {
-      dispatch(setRestaurant(item));
-    }
-  }, [dispatch, item]);
+
   return (
     <View style={styles.container}>
-      <CartIcon />
+      {/* cart icon  */}
+      {/* <CartIcon /> */}
       <StatusBar barStyle={'light-content'} hidden={true} />
       <ScrollView>
         <View style={styles.imageContainer}>
@@ -144,7 +139,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   menuContainer: {
-    paddingBottom: 36,
+
+    // paddingBottom: 36,
     backgroundColor: 'white',
   },
   menuTitle: {

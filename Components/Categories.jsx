@@ -9,7 +9,7 @@ const Categories = () => {
 
   const handleCategorySelect = (categoryId) => {
     setActiveCategory(categoryId);
-    setModalVisible(true);
+    // setModalVisible(true);
   };
 
   // Filter restaurants based on selected category

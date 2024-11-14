@@ -16,8 +16,8 @@ export const categories=[
     },
     {
         id:4,
-        name:'chanies',
-        image: require('../Assets/categories/icons8-tropical-fish-96.png'),
+        name:'chinies',
+        image: require('../Assets/categories/chinies-removebg-preview.png'),
     },
     {
         id:5,
@@ -93,14 +93,147 @@ export const categories=[
 //         }
 //     ]
 // }
+// export const featured = {
+//     id: 1,
+//     title: 'Explore Our Best Restaurants',
+//     description: 'Explore top restaurants for a delicious meal',
+//     restaurants: [
+//         {
+//             id: 1,
+//             name: 'Papa John\'s',
+//             image: require('../Assets/restaurants/restaurant.jpg'),
+//             description: 'hot and spicy pizzas',
+//             lng: 38.21455,
+//             lat: -85.2547,
+//             address: '234 Second Street',
+//             star: 4,
+//             review: '4.4k',
+//             category: 'fast Food',
+//             dishes: [
+//                 {
+//                     id: 1,
+//                     name: 'Pizza',
+//                     description: 'cheezy garlic pizza',
+//                     price: 10,
+//                     image: require('../Assets/dishes/download.jpeg'),
+//                 },
+//                 {
+//                     id: 2,
+//                     name: 'Pizza',
+//                     description: 'cheezy garlic pizza',
+//                     price: 15,
+//                     image: require('../Assets/dishes/download6.jpeg'),
+//                 },
+//             ],
+//         },
+//         {
+//             id: 2,
+//             name: 'Burger King',
+//             image: require('../Assets/restaurants/hotel.jpg'),
+//             description: 'flame-grilled burgers',
+//             lng: 38.21875,
+//             lat: -85.2647,
+//             address: '456 Third Street',
+//             star: 4.2,
+//             review: '3.8k',
+//             category: 'burgers',
+//             dishes: [
+//                 {
+//                     id: 1,
+//                     name: 'Whopper',
+//                     description: 'classic flame-grilled burger',
+//                     price: 7,
+//                     image: require('../Assets/dishes/download1.jpeg'),
+//                 },
+//                 {
+//                     id: 2,
+//                     name: 'Chicken Fries',
+//                     description: 'crispy chicken fries',
+//                     price: 5,
+//                     image: require('../Assets/dishes/download2.jpeg'),
+//                 },
+//                 {
+//                     id: 3,
+//                     name: 'Chicken Sandwich',
+//                     description: 'crispy chicken on a soft bun',
+//                     price: 6,
+//                     image: require('../Assets/dishes/download6.jpeg'),
+//                 },
+//                 {
+//                     id: 4,
+//                     name: 'Chicken Sandwich',
+//                     description: 'crispy chicken on a soft bun',
+//                     price: 6,
+//                     image: require('../Assets/dishes/download6.jpeg'),
+//                 },
+//             ],
+//         },
+//         {
+//             id: 3,
+//             name: 'Subway',
+//             image: require('../Assets/restaurants/rawImage.jpg'),
+//             description: 'fresh sandwiches and salads',
+//             lng: 38.22567,
+//             lat: -85.2548,
+//             address: '789 Fourth Avenue',
+//             star: 4.5,
+//             review: '5.2k',
+//             category: 'healthy',
+//             dishes: [
+//                 {
+//                     id: 1,
+//                     name: 'Veggie Delight',
+//                     description: 'fresh veggies and cheese',
+//                     price: 6,
+//                     image: require('../Assets/dishes/download.jpeg'),
+//                 },
+//                 {
+//                     id: 2,
+//                     name: 'Italian BMT',
+//                     description: 'spicy Italian meats with cheese',
+//                     price: 8,
+//                     image: require('../Assets/dishes/download6.jpeg'),
+//                 },
+//             ],
+//         },
+//         {
+//             id: 4,
+//             name: 'KFC',
+//             image: require('../Assets/restaurants/inside-the-restaurant.jpg'),
+//             description: 'crispy fried chicken',
+//             lng: 38.22834,
+//             lat: -85.2674,
+//             address: '101 Fifth Avenue',
+//             star: 4.3,
+//             review: '4.9k',
+//             category: 'chicken',
+//             dishes: [
+//                 {
+//                     id: 1,
+//                     name: 'Bucket Meal',
+//                     description: 'crispy fried chicken with sides',
+//                     price: 20,
+//                     image: require('../Assets/dishes/download.jpeg'),
+//                 },
+//                 {
+//                     id: 2,
+//                     name: 'Chicken Sandwich',
+//                     description: 'crispy chicken on a soft bun',
+//                     price: 6,
+//                     image: require('../Assets/dishes/download6.jpeg'),
+//                 },
+//             ],
+//         },
+//     ],
+// };
 export const featured = {
     id: 1,
-    title: 'hot and spicy',
-    description: 'soft and tender fried chicken',
+    title: 'Explore Our Best Restaurants',
+    description: 'Explore top restaurants for a delicious meal',
     restaurants: [
         {
             id: 1,
-            name: 'Papa John\'s',
+            name: "Papa John's",
             image: require('../Assets/restaurants/restaurant.jpg'),
             description: 'hot and spicy pizzas',
             lng: 38.21455,
@@ -116,6 +249,11 @@ export const featured = {
                     description: 'cheezy garlic pizza',
                     price: 10,
                     image: require('../Assets/dishes/download.jpeg'),
+                    subDishes: [
+                        { id: 1, name: 'Margherita', image: require('../Assets/restaurants/inside-the-restaurant.jpg'), description: 'classic cheese pizza', price: 8 },
+                        { id: 2, name: 'Pepperoni',  image: require('../Assets/restaurants/restaurant.jpg'), description: 'pepperoni and cheese', price: 9 },
+                        { id: 3, name: 'Veggie Supreme', image: require('../Assets/restaurants/inside-the-restaurant.jpg'), description: 'loaded with veggies', price: 9 },
+                    ],
                 },
                 {
                     id: 2,
@@ -123,6 +261,11 @@ export const featured = {
                     description: 'cheezy garlic pizza',
                     price: 15,
                     image: require('../Assets/dishes/download6.jpeg'),
+                    subDishes: [
+                        { id: 1, name: 'BBQ Chicken', image: require('../Assets/restaurants/inside-the-restaurant.jpg'), description: 'chicken with BBQ sauce', price: 12 },
+                        { id: 2, name: 'Hawaiian',  image: require('../Assets/restaurants/restaurant.jpg'), description: 'pineapple and ham', price: 10 },
+                        { id: 3, name: 'Meat Lover\'s', image: require('../Assets/restaurants/inside-the-restaurant.jpg'), description: 'loaded with meats', price: 13 },
+                    ],
                 },
             ],
         },
@@ -144,6 +287,10 @@ export const featured = {
                     description: 'classic flame-grilled burger',
                     price: 7,
                     image: require('../Assets/dishes/download1.jpeg'),
+                    subDishes: [
+                        { id: 1, name: 'Whopper Jr.',image: require('../Assets/dishes/download1.jpeg'), description: 'smaller version of the Whopper', price: 5 },
+                        { id: 2, name: 'Double Whopper',image: require('../Assets/dishes/download6.jpeg'), description: 'double patty Whopper', price: 9 },
+                    ],
                 },
                 {
                     id: 2,
@@ -154,13 +301,6 @@ export const featured = {
                 },
                 {
                     id: 3,
-                    name: 'Chicken Sandwich',
-                    description: 'crispy chicken on a soft bun',
-                    price: 6,
-                    image: require('../Assets/dishes/download6.jpeg'),
-                },
-                {
-                    id: 4,
                     name: 'Chicken Sandwich',
                     description: 'crispy chicken on a soft bun',
                     price: 6,
@@ -186,6 +326,10 @@ export const featured = {
                     description: 'fresh veggies and cheese',
                     price: 6,
                     image: require('../Assets/dishes/download.jpeg'),
+                    subDishes: [
+                        { id: 1, name: 'Veggie Delight Wrap',image: require('../Assets/dishes/download1.jpeg'), description: 'wrapped in a tortilla', price: 6 },
+                        { id: 2, name: 'Veggie Delight Salad',image: require('../Assets/restaurants/inside-the-restaurant.jpg'), description: 'veggie delight in salad form', price: 5 },
+                    ],
                 },
                 {
                     id: 2,
@@ -214,6 +358,10 @@ export const featured = {
                     description: 'crispy fried chicken with sides',
                     price: 20,
                     image: require('../Assets/dishes/download.jpeg'),
+                    subDishes: [
+                        { id: 1, name: '8-Piece Bucket',image: require('../Assets/dishes/download1.jpeg'), description: '8 pieces with 2 sides', price: 22 },
+                        { id: 2, name: '12-Piece Bucket',  image: require('../Assets/restaurants/restaurant.jpg'), description: '12 pieces with 4 sides', price: 30 },
+                    ],
                 },
                 {
                     id: 2,

@@ -10,9 +10,10 @@ import {
 import React from 'react';
 import * as Icon from 'react-native-feather';
 import Categories from '../Components/Categories';
-import { featured } from '../constants';
+import {featured} from '../constants';
 import FeatureRow from '../Components/FeatureRow';
 import Header from '../Components/Header/Header';
+import BannerSlider from '../Components/BannerSlider/BannerSlider';
 
 const HomeScreen = () => {
   return (
@@ -49,17 +50,23 @@ const HomeScreen = () => {
         </View>
 
         {/* Scrollable Content */}
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        >
+          contentContainerStyle={{paddingBottom: 20}}>
           {/* Categories */}
-          <Categories />
-          {/* slider */}
-
+          <View style={styles.Categories}>
+            <Categories />
+          </View>
+          <View>
+            <Text style={styles.Title}>Delicious Picks Just for You on <Text style={styles.BiteBase}>BiteBase</Text></Text>
+          </View>
+          {/* Banner slider */}
+          <View style={styles.banner}>
+            <BannerSlider />
+          </View>
           {/* Featured Section */}
           <View style={styles.featureContainer}>
-            {[featured, featured].map((item, index) => (
+            {[featured].map((item, index) => (
               <FeatureRow
                 key={index}
                 title={item.title}
@@ -120,9 +127,23 @@ const styles = StyleSheet.create({
   sliderIcon: {
     padding: 5,
     borderRadius: 100,
-    backgroundColor: "#f97316",
+    backgroundColor: '#f97316',
   },
   featureContainer: {
     marginTop: 5,
+  },
+  Title:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginTop:5,
+  },
+  BiteBase:{
+color:'green'
+ },
+  banner: {
+    padding: 15,
+    // marginTop: 10,
   },
 });
