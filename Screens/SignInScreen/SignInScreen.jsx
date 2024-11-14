@@ -9,7 +9,7 @@ const SignInScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleSignIn = () => {
-    navigation.navigate('Home')
+    navigation.navigate('Home');
   };
 
   return (

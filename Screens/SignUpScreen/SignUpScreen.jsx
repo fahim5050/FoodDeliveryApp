@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
+//   input
   input: {
     height: 50,
     borderColor: '#ccc',
