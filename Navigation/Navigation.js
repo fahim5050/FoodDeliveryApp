@@ -20,8 +20,8 @@ const Navigation = () => {
       <Stack.Navigator screenOptions={{
         headerShown:false,
       }}>
-        <Stack.Screen name="SignIn" component={SignInScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+      {/* <Stack.Screen name="SignIn" component={SignInScreen} /> */}
+      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Restaurant" component={RestaurantScreen} />
       <Stack.Screen name="OrderPreparing" options={{presentation:'fullScreenModal'}} component={OrderPreparingScreen} />
       <Stack.Screen name="Cart" options={{presentation:'modal'}} component={CartScreen} />

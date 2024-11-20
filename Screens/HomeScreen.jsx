@@ -7,15 +7,35 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as Icon from 'react-native-feather';
 import Categories from '../Components/Categories';
-import {featured} from '../constants';
+import { featured } from '../constants';
 import FeatureRow from '../Components/FeatureRow';
 import Header from '../Components/Header/Header';
 import BannerSlider from '../Components/BannerSlider/BannerSlider';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBranches } from '../Utils/Apis';
 const HomeScreen = () => {
+
+  const dispatch = useDispatch();
+  const branches = useSelector((state) => state.data.data);
+
+  useEffect(() => {
+    // Dispatch the fetchBranches action when the component mounts
+    dispatch(fetchBranches());
+  }, [dispatch]);
+
+  // Log the branches data to the console
+
+  useEffect(() => {
+    if (branches) {
+      console.log('Branches data:', branches);
+    }
+  }, [branches]);
+
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -52,7 +72,7 @@ const HomeScreen = () => {
         {/* Scrollable Content */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 20}}>
+          contentContainerStyle={{ paddingBottom: 20 }}>
           {/* Categories */}
           <View style={styles.Categories}>
             <Categories />
@@ -61,9 +81,9 @@ const HomeScreen = () => {
             <Text style={styles.Title}>Delicious Picks Just for You on <Text style={styles.BiteBase}>BiteBase</Text></Text>
           </View>
           {/* Banner slider */}
-          <View style={styles.banner}>
+          {/* <View style={styles.banner}>
             <BannerSlider />
-          </View>
+          </View> */}
           {/* Featured Section */}
           <View style={styles.featureContainer}>
             {[featured].map((item, index) => (
@@ -132,16 +152,16 @@ const styles = StyleSheet.create({
   featureContainer: {
     marginTop: 5,
   },
-  Title:{
+  Title: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
-    marginTop:5,
+    marginTop: 5,
   },
-  BiteBase:{
-color:'green'
- },
+  BiteBase: {
+    color: 'green'
+  },
   banner: {
     padding: 15,
     // marginTop: 10,

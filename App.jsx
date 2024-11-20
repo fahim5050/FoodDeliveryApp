@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
+import { StyleSheet } from 'react-native';
+import { Provider } from 'react-redux';
+import store from './store'; // Adjust the path as necessary
 import Navigation from './Navigation/Navigation';
-import SplashScreen from 'react-native-splash-screen';
+import SplashScreen from 'react-native-splash-screen'
 
 const App = () => {
   useEffect(() => {
@@ -15,10 +17,12 @@ const App = () => {
   }, []);
 
   return (
-    <Navigation />
+    <Provider store={store}>
+      <Navigation />
+    </Provider>
   );
-}
+};
 
 export default App;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
