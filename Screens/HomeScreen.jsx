@@ -16,10 +16,11 @@ import Header from '../Components/Header/Header';
 import BannerSlider from '../Components/BannerSlider/BannerSlider';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBranches } from '../Utils/Apis';
+
 const HomeScreen = () => {
 
   const dispatch = useDispatch();
-  const branches = useSelector((state) => state.data.data);
+  const branches = useSelector((state) => state.data?.data);
 
   useEffect(() => {
     // Dispatch the fetchBranches action when the component mounts
