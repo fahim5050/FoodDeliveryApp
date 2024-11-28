@@ -9,7 +9,7 @@ const SignUpScreen = ({ navigation }) => {
   
   const handleSignUp = () => {
     // Handle sign-up logic here
-    console.log('Signed up:', name, email, password);
+    // console.log('Signed up:', name, email, password);
   };
 
   return (

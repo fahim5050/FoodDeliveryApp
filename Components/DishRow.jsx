@@ -17,7 +17,7 @@ const DishRow = ({item}) => {
       <Image style={styles.image} source={item.image} />
       <View style={styles.detailsContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.dishName}>{item.name}</Text>
+          <Text style={styles.dishName}>{item.foodName}</Text>
           <Text style={styles.dishDescription}>{item.description}</Text>
         </View>
         {/* <View style={styles.priceQuantityContainer}> */}

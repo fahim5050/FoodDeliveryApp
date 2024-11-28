@@ -29,11 +29,17 @@ const HomeScreen = () => {
 
   // Log the branches data to the console
 
-  useEffect(() => {
-    if (branches) {
-      console.log('Branches data:', branches);
-    }
-  }, [branches]);
+  // useEffect(() => {
+  //   if (branches) {
+  //     branches.forEach((branch) => {
+  //       const { branchName, branchLogoName, email } = branch;
+  //       console.log('Branch Name:', branchName);
+  //       console.log('Branch Logo Name:', branchLogoName);
+  //       console.log('Email:');
+
+  //     });
+  //   }
+  // }, [branches]);
 
   
 
@@ -91,7 +97,7 @@ const HomeScreen = () => {
               <FeatureRow
                 key={index}
                 title={item.title}
-                restaurants={item.restaurants}
+                restaurants={branches}
                 description={item.description}
               />
             ))}

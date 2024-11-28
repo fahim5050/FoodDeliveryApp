@@ -19,10 +19,13 @@ const RestaurantCard = ({item}) => {
       onPress={() => navigation.navigate('Restaurant', {...item})}>
       <View style={styles.container}>
         <View style={[styles.imageContainer, {height: imageHeight}]}>
-          <Image style={styles.image} source={item.image} />
+        <Image
+  style={styles.image}
+  source={require('../Assets/restaurants/download.jpeg')}
+/>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.restaurantName}>{item.name}</Text>
+          <Text style={styles.restaurantName}>{item.branchName}</Text>
           <View style={styles.ratingContainer}>
             <Icon.Star fill="gold" stroke="gold" height="15" width="15" />
             <Text style={styles.ratingText}>{item.star}</Text>
