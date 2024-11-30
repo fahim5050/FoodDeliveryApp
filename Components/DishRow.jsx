@@ -1,5 +1,5 @@
-import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {fetchProductVariantsByCategoryId} from '../Utils/Apis';
@@ -7,37 +7,55 @@ import {fetchProductVariantsByCategoryId} from '../Utils/Apis';
 const DishRow = ({item}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePress = () => {
-    if (item.id) {
+    if (item?.id) {
+      setIsLoading(true); // Show loading indicator
       dispatch(fetchProductVariantsByCategoryId(item.id))
-        .unwrap() // Ensure you get the resolved payload
+        .unwrap()
         .then((productVariants) => {
+          setIsLoading(false); // Hide loading indicator
           navigation.navigate('SubDishes', {
-            subDishes: productVariants, // Pass the fetched product variants
-            dishName: item.name, // Pass the dish name
-            dishImage: item.imageName, // Pass the main dish image
+            subDishes: productVariants,
+            dishName: item.name,
+            dishImage: item.imageName,
           });
         })
         .catch((error) => {
+          setIsLoading(false); // Hide loading indicator
           console.error('Error fetching product variants:', error);
+          alert('Unable to fetch product details. Please try again.');
         });
+    } else {
+      alert('Invalid item selected.');
     }
   };
 
+  // Fallback for missing or undefined data
   if (!item || !item.name || !item.imageName) {
-    return <Text>Unavailable</Text>; // If item data is incomplete or not provided
+    return (
+      <View style={styles.fallbackContainer}>
+        <Text style={styles.fallbackText}> unavailable.</Text>
+      </View>
+    );
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress}>
-      <Image style={styles.image} source={item.imageName} />
-      <View style={styles.detailsContainer}>
-        <View style={styles.textContainer}>
-          <Text style={styles.dishName}>{item.name}</Text>
-          <Text style={styles.dishDescription}>{item.createdDate}</Text>
-        </View>
-      </View>
+    <TouchableOpacity style={styles.container} onPress={handlePress} disabled={isLoading}>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#f97316" style={styles.loader} />
+      ) : (
+        <>
+          <Image style={styles.image} source={{uri: item.imageName}} />
+          <View style={styles.detailsContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.dishName}>{item.name}</Text>
+              <Text style={styles.dishDescription}>{item.createdDate}</Text>
+            </View>
+          </View>
+        </>
+      )}
     </TouchableOpacity>
   );
 };

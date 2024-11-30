@@ -22,7 +22,7 @@ const SubDishes = ({route}) => {
         {subDishes.length > 0 ? (
           <FlatList
             data={subDishes}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(itm) => itm.id.toString()}
             renderItem={({item}) => (
               <View style={styles.subDishContainer}>
                 <Image source={{uri: item.image}} style={styles.image} />
