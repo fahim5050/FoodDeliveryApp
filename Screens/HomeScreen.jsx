@@ -32,7 +32,7 @@ const HomeScreen = () => {
   // useEffect(() => {
   //   if (branches) {
   //     branches.forEach((branch) => {
-  //       const { branchName, branchLogoName, email } = branch;
+  //       const { branchName, branchLogoName} = branch;
   //       console.log('Branch Name:', branchName);
   //       console.log('Branch Logo Name:', branchLogoName);
   //       console.log('Email:');
@@ -40,9 +40,6 @@ const HomeScreen = () => {
   //     });
   //   }
   // }, [branches]);
-
-  
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />

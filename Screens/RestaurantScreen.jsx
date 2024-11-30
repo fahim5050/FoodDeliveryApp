@@ -7,57 +7,76 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Icon from 'react-native-feather';
 import DishRow from '../Components/DishRow';
-// import CartIcon from '../Components/CartIcon';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFoodCategoriesByBranchId } from '../Utils/Apis';
 
 const RestaurantScreen = () => {
-  const {params} = useRoute();
-  const item = params;
+  const { params } = useRoute();
+  const { branchName, address, image, id, description, star, review, category } = params;
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const { productVariants = [], status } = useSelector((state) => state.data); // Default to empty array if undefined
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchFoodCategoriesByBranchId(id)); // Fetch categories for the restaurant's branch
+    }
+  }, [id, dispatch]);
+
 
   return (
     <View style={styles.container}>
-      {/* cart icon  */}
-      {/* <CartIcon /> */}
       <StatusBar barStyle={'light-content'} hidden={true} />
       <ScrollView>
+        {/* Restaurant Banner */}
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={item.image} />
+          <Image style={styles.image} source={{ uri: image }} />
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
             <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
           </TouchableOpacity>
         </View>
+
+        {/* Restaurant Details */}
         <View style={styles.detailsContainer}>
           <View style={styles.headerContainer}>
-            <Text style={styles.restaurantName}>{item.name}</Text>
+            <Text style={styles.restaurantName}>{branchName}</Text>
             <View style={styles.ratingRow}>
               <View style={styles.ratingContainer}>
                 <Icon.Star fill="gold" stroke="gold" height={15} width={15} />
-                <Text style={styles.ratingText}>{item.star}</Text>
+                <Text style={styles.ratingText}>{star}</Text>
                 <Text style={styles.review}>
-                  ({item.review} reviews) -{' '}
-                  <Text style={styles.category}>{item.category}</Text>
+                  ({review} reviews) -{' '}
+                  <Text style={styles.category}>{category}</Text>
                 </Text>
               </View>
               <View style={styles.locationContainer}>
                 <Icon.MapPin color="gray" width={15} height={15} />
-                <Text style={styles.locationText}>Nearby. {item.address}</Text>
+                <Text style={styles.locationText}>Nearby. {address}</Text>
               </View>
             </View>
-            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.description}>{description}</Text>
           </View>
         </View>
+
+        {/* Menu Section */}
         <View style={styles.menuContainer}>
           <Text style={styles.menuTitle}>Menu</Text>
-          {item.dishes.map((dish, index) => (
-            <DishRow item={{...dish}} key={index} />
-          ))}
+          {status === 'loading' ? (
+            <Text style={styles.loadingText}>Loading dishes...</Text>
+          ) : productVariants.length > 0 ? (
+            productVariants.map((dish) => (
+              <DishRow key={dish.id} item={{ ...dish }} />
+            ))
+          ) : (
+            <Text style={styles.noDishesText}>No dishes available for this restaurant.</Text>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -65,7 +84,6 @@ const RestaurantScreen = () => {
 };
 
 export default RestaurantScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,57 +1,49 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import * as Icon from 'react-native-feather';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {fetchProductVariantsByCategoryId} from '../Utils/Apis';
 
 const DishRow = ({item}) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const handlePress = () => {
-    navigation.navigate('SubDishes', {
-      subDishes: item.subDishes, // Pass the sub-dishes
-      dishName: item.name,       // Pass the dish name
-      dishImage: item.image,     // Pass the main dish image
-    });
+    if (item.id) {
+      dispatch(fetchProductVariantsByCategoryId(item.id))
+        .unwrap() // Ensure you get the resolved payload
+        .then((productVariants) => {
+          navigation.navigate('SubDishes', {
+            subDishes: productVariants, // Pass the fetched product variants
+            dishName: item.name, // Pass the dish name
+            dishImage: item.imageName, // Pass the main dish image
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching product variants:', error);
+        });
+    }
+  };
+
+  if (!item || !item.name || !item.imageName) {
+    return <Text>Unavailable</Text>; // If item data is incomplete or not provided
   }
+
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
-      <Image style={styles.image} source={item.image} />
+      <Image style={styles.image} source={item.imageName} />
       <View style={styles.detailsContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.dishName}>{item.foodName}</Text>
-          <Text style={styles.dishDescription}>{item.description}</Text>
+          <Text style={styles.dishName}>{item.name}</Text>
+          <Text style={styles.dishDescription}>{item.createdDate}</Text>
         </View>
-        {/* <View style={styles.priceQuantityContainer}> */}
-        {/* <Text style={styles.priceText}>${item.price}</Text> */}
-        {/* <View style={styles.quantityContainer}>
-            <TouchableOpacity
-              onPress={() => handleDecrease}
-              style={styles.iconButton}>
-              <Icon.Minus
-                strokeWidth={2}
-                height={20}
-                width={20}
-                stroke="white"
-              />
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>5</Text>
-            <TouchableOpacity
-              onPress={() => handleIncrease}
-              style={styles.iconButton}>
-              <Icon.Plus
-                strokeWidth={2}
-                height={20}
-                width={20}
-                stroke="white"
-              />
-            </TouchableOpacity>
-          </View> */}
-        {/* </View> */}
       </View>
     </TouchableOpacity>
   );
 };
 
 export default DishRow;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -68,7 +60,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 4,
     elevation: 3,
-
   },
   image: {
     height: 100,
@@ -79,7 +70,6 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     paddingLeft: 8,
-   
   },
   textContainer: {
     paddingLeft: 3,

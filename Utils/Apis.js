@@ -43,3 +43,22 @@ export const fetchOrganization = createAsyncThunk('data/fetchOrganization', asyn
     const response = await axios.get(`${BASE_URL}/Restaurants/GetOrganization`);
     return response.data; // This becomes action.payload
 });
+
+export const fetchFoodCategoriesByBranchId = createAsyncThunk(
+    'data/fetchFoodCategoriesByBranchId',
+    async (branchId) => {
+        const response = await axios.get(`${BASE_URL}/Food/GetFoodCategoriesByBranchId?BranchId=${branchId}`);
+        return response.data; // This becomes action.payload
+    }
+);
+
+// Function to fetch product variants by category ID
+export const fetchProductVariantsByCategoryId = createAsyncThunk(
+    'data/fetchProductVariantsByCategoryId',
+    async (categoryId) => {
+        const response = await axios.get(`${BASE_URL}/Food/GetProductVariantsByCategoryId`, {
+            params: { categoryId }, // Pass categoryId as a query parameter
+        });
+        return response.data; // This becomes action.payload
+    }
+);

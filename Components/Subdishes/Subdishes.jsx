@@ -3,51 +3,48 @@ import React from 'react';
 import * as Icon from 'react-native-feather';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const SubDishes = ({ route }) => {
-  const { subDishes, dishName, dishImage } = route.params; // Get dishImage from params
+const SubDishes = ({route}) => {
   const navigation = useNavigation();
+  const {subDishes, dishName, dishImage} = route.params;
 
   return (
     <View style={styles.container}>
-      {/* Display the main dish image at the top */}
-      <View  style={styles.imageContainer}>
-      <Image source={dishImage} style={styles.mainDishImage} />
-
-      {/* Back Button */}
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}>
-        <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
-      </TouchableOpacity>
+      <View style={styles.imageContainer}>
+        <Image source={{uri: dishImage}} style={styles.mainDishImage} />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
+        </TouchableOpacity>
       </View>
-      {/* Sub-dishes container */}
       <View style={styles.subDishesContainer}>
-        {/* Sub-dish title */}
-        <Text style={styles.title}>{dishName} - Sub Dishes</Text>
-
-        {/* List of sub-dishes */}
-        {subDishes ? <FlatList
-          data={subDishes}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.subDishContainer}>
-              <Image source={item.image} style={styles.image} />
-              <View style={styles.textContainer}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                <Text style={styles.price}>${item.price}</Text>
+        <Text style={styles.title}>{dishName} - Variants</Text>
+        {subDishes.length > 0 ? (
+          <FlatList
+            data={subDishes}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({item}) => (
+              <View style={styles.subDishContainer}>
+                <Image source={{uri: item.image}} style={styles.image} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.name}>{item.foodName}</Text>
+                  <Text style={styles.description}>{item.variant}</Text>
+                  <Text style={styles.price}>${item.price}</Text>
+                </View>
               </View>
-            </View>
-          )}
-        /> : <View style={styles.noItemsContainer}>
-          <Text style={styles.noItemsText}>Sorry No category available for this item</Text>
-        </View>
-        }
+            )}
+          />
+        ) : (
+          <View style={styles.noItemsContainer}>
+            <Text style={styles.noItemsText}>
+              Sorry, no products available for this category.
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   // Container for the entire screen
   container: {
