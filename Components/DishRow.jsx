@@ -8,7 +8,8 @@ const DishRow = ({item}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
+//  console.log('image path is ',item.imageName);
+const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   const handlePress = () => {
     if (item?.id) {
       setIsLoading(true); // Show loading indicator
@@ -47,7 +48,14 @@ const DishRow = ({item}) => {
         <ActivityIndicator size="large" color="#f97316" style={styles.loader} />
       ) : (
         <>
-          <Image style={styles.image} source={{uri: item.imageName}} />
+         <Image
+  style={styles.image}
+  source={
+    item.imageName
+      ? { uri: `${BASE_IMAGE_URL}${item.imageName}` } // Use the URL if it exists
+      : require('../Assets/images/profile.jpg') // Fallback to local image
+  }
+/>
           <View style={styles.detailsContainer}>
             <View style={styles.textContainer}>
               <Text style={styles.dishName}>{item.name}</Text>

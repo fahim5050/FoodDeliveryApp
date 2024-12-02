@@ -6,28 +6,42 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Icon from 'react-native-feather';
 import DishRow from '../Components/DishRow';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFoodCategoriesByBranchId } from '../Utils/Apis';
+import { useFocusEffect } from '@react-navigation/native'; // <-- Import useFocusEffect
 
 const RestaurantScreen = () => {
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/restaurant/';
   const { params } = useRoute();
-  const { branchName, address, image, id, description, star, review, category } = params;
+  const { branchName, address, imageName, id, description, star, review, category } = params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const { productVariants = [], status } = useSelector((state) => state.data); // Default to empty array if undefined
 
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchFoodCategoriesByBranchId(id)); // Fetch categories for the restaurant's branch
-    }
-  }, [id, dispatch]);
+  // Fetch categories when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (id) {
+        dispatch(fetchFoodCategoriesByBranchId(id)); // Fetch categories for the restaurant's branch
+      }
+    }, [id, dispatch]) // <-- Dependencies ensure fetch is tied to id and dispatch
+  );
 
+  // Show loading spinner if the data is still loading
+  if (status === 'loading') {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#f97316" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -35,7 +49,14 @@ const RestaurantScreen = () => {
       <ScrollView>
         {/* Restaurant Banner */}
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{ uri: image }} />
+        <Image
+  style={styles.image}
+  source={
+    imageName
+      ? { uri: `${BASE_IMAGE_URL}${imageName}` } // Use the URL if it exists
+      : require('../Assets/restaurants/download.jpeg') // Fallback to local image
+  }
+/>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
@@ -68,14 +89,12 @@ const RestaurantScreen = () => {
         {/* Menu Section */}
         <View style={styles.menuContainer}>
           <Text style={styles.menuTitle}>Menu</Text>
-          {status === 'loading' ? (
-            <Text style={styles.loadingText}>Loading dishes...</Text>
-          ) : productVariants.length > 0 ? (
+          {productVariants.length > 0 ? (
             productVariants.map((dish) => (
               <DishRow key={dish.id} item={{ ...dish }} />
             ))
           ) : (
-            <Text style={styles.noDishesText}>No dishes available for this restaurant.</Text>
+            <Text style={styles.noDishesText}>Sorry No dishes available for this restaurant.</Text>
           )}
         </View>
       </ScrollView>
@@ -84,9 +103,16 @@ const RestaurantScreen = () => {
 };
 
 export default RestaurantScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white', // Optional background color for the loading screen
   },
   imageContainer: {
     position: 'relative',
@@ -157,8 +183,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   menuContainer: {
-
-    // paddingBottom: 36,
     backgroundColor: 'white',
   },
   menuTitle: {
@@ -166,5 +190,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     color: 'black',
+  },
+  noDishesText: {
+    padding: 16,
+    fontSize: 14,
+    color: 'red',
+    textAlign: 'center',
   },
 });
