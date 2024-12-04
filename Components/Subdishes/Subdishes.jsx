@@ -36,6 +36,7 @@ const SubDishes = ({ route }) => {
     setSelectedItem(item); // Set selected item
     setModalVisible(true); // Open modal
   };
+  console.log(subDishes.map(item => item.foodId));
 
   return (
     <View style={styles.container}>
@@ -59,7 +60,8 @@ const SubDishes = ({ route }) => {
         {subDishes.length > 0 ? (
           <FlatList
             data={subDishes}
-            keyExtractor={(itm) => itm.id.toString()}
+            keyExtractor={(item) => item.foodId.toString()}
+
             renderItem={({ item }) => (
               <View style={styles.subDishContainer}>
                 <Image
