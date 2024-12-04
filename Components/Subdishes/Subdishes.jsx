@@ -2,9 +2,12 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import * as Icon from 'react-native-feather';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/CartSlice';
 
 const SubDishes = ({ route }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { subDishes, dishName, dishImage } = route.params;
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
 
@@ -14,11 +17,12 @@ const SubDishes = ({ route }) => {
   const [counter, setCounter] = useState(1);  // Counter for item quantity
 
   const handleAddToCart = (item) => {
-    // Logic to add the item to the cart
-    console.log('Added to cart:', item);
+    const itemToAdd = { ...item, quantity: counter };
+    dispatch(addToCart(itemToAdd));
     alert(`${item.foodName} has been added to your cart!`);
     setModalVisible(false); // Close modal after adding to cart
   };
+
 
   const handleCounterChange = (operation) => {
     if (operation === 'increment') {

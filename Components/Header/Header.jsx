@@ -1,9 +1,12 @@
+// Header.js
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import * as Icon from 'react-native-feather';
+import NotificationIcon from '../../Components/Notification/Notification'; // Import the NotificationIcon component
+import CartIcon from '../cartIcon/cartIcon';
+ // Import the CartIcon component
 
-const Header = ({ userName = 'Thomas', userImage, notificationCount = 4, cartCount = 3,  }) => {
+const Header = ({ userName = 'Thomas', userImage, notificationCount = 4, cartCount = 3 }) => {
   const navigation = useNavigation();
   
   return (
@@ -25,25 +28,17 @@ const Header = ({ userName = 'Thomas', userImage, notificationCount = 4, cartCou
 
       {/* Icons Section */}
       <View style={styles.iconsContainer}>
-        {/* Notification Icon with Badge */}
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.iconWrapper}>
-          <Icon.Bell stroke="white" width={25} height={25} />
-          {notificationCount > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{notificationCount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+        {/* Notification Icon */}
+        <NotificationIcon
+          notificationCount={notificationCount}
+          onPress={() => navigation.navigate('Notifications')}
+        />
 
-        {/* Cart Icon with Badge */}
-        <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={[styles.iconWrapper, styles.cartIcon]}>
-          <Icon.ShoppingCart stroke="white" width={25} height={25} />
-          {cartCount > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{cartCount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+        {/* Cart Icon */}
+        <CartIcon
+          cartCount={cartCount}
+          onPress={() => navigation.navigate('Cart')}
+        />
       </View>
     </View>
   );
@@ -77,31 +72,6 @@ const styles = StyleSheet.create({
   iconsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  iconWrapper: {
-    position: 'relative',
-    padding: 5,
-  },
-  cartIcon: {
-    marginLeft: 20,
-  },
-  badge: {
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    minWidth: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeText: {
-    color: '#f97316',
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'center',
   },
 });
 

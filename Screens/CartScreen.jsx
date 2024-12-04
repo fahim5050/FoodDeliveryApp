@@ -7,13 +7,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { featured } from '../constants';
 import * as Icon from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeFromCart } from '../redux/CartSlice';
 
 const CartScreen = () => {
   const navigation = useNavigation();
-  const restaurant = featured.restaurants[1];
+  const cartItems = useSelector(state => state.cart.items); 
+  const dispatch = useDispatch();
+
+  // Calculate totals
+  const getSubtotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const getTotal = () => {
+    return getSubtotal() + 14; // Assuming $14 for the delivery fee
+  };
 
   return (
     <View style={styles.container}>
@@ -27,7 +38,6 @@ const CartScreen = () => {
         </TouchableOpacity>
         <View>
           <Text style={styles.headerText}>Your Cart</Text>
-          <Text style={styles.subHeaderText}>{restaurant.name}</Text>
         </View>
       </View>
 
@@ -48,29 +58,34 @@ const CartScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
-        {restaurant.dishes.map((dish, index) => (
-          <View style={styles.dishContainer} key={index}>
-            <Text style={styles.dishQuantity}>2 x</Text>
-            <Image style={styles.dishImage} source={dish.image} />
-            <Text style={styles.dishName}>{dish.name}</Text>
-            <Text style={styles.dishPrice}>${dish.price}</Text>
-            <TouchableOpacity style={styles.iconButton}>
-              <Icon.Minus
-                strokeWidth={2}
-                height={20}
-                width={20}
-                stroke="white"
+        {cartItems.length > 0 ? (
+          cartItems.map((dish, index) => (
+            <View style={styles.dishContainer} key={index}>
+              <Text style={styles.dishQuantity}>{dish.quantity} x</Text>
+              <Image
+                style={styles.dishImage}
+                source={{ uri: dish.foodImageName || require('../Assets/dishes/download2.jpeg') }}
               />
-            </TouchableOpacity>
-          </View>
-        ))}
+              <Text style={styles.dishName}>{dish.foodName}</Text>
+              <Text style={styles.dishPrice}>${dish.price}</Text>
+              <TouchableOpacity 
+                style={styles.iconButton} 
+                onPress={() => dispatch(removeFromCart(dish.id))} // Dispatch remove from cart action
+              >
+                <Icon.Minus strokeWidth={2} height={20} width={20} stroke="white" />
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.emptyCartText}>Your cart is empty</Text>
+        )}
       </ScrollView>
 
       {/* Total section */}
       <View style={styles.totalContainer}>
         <View style={styles.totalRow}>
           <Text>Subtotal</Text>
-          <Text>$6</Text>
+          <Text>${getSubtotal()}</Text>
         </View>
         <View style={styles.totalRow}>
           <Text>Delivery Fee</Text>
@@ -78,10 +93,12 @@ const CartScreen = () => {
         </View>
         <View style={styles.totalRow}>
           <Text style={styles.totalText}>Order Total</Text>
-          <Text style={styles.totalText}>$20</Text>
+          <Text style={styles.totalText}>${getTotal()}</Text>
         </View>
-        <TouchableOpacity style={styles.placeOrderButton}
-        onPress={()=>navigation.navigate('OrderPreparing')}>
+        <TouchableOpacity
+          style={styles.placeOrderButton}
+          onPress={() => navigation.navigate('OrderPreparing')}
+        >
           <Text style={styles.placeOrderText}>Place Order</Text>
         </TouchableOpacity>
       </View>
@@ -113,11 +130,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: 'black',
-    textAlign: 'center',
-  },
-  subHeaderText: {
-    fontSize: 16,
-    color: 'gray',
     textAlign: 'center',
   },
   deliveryInfo: {
@@ -224,5 +236,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  emptyCartText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#333',
   },
 });

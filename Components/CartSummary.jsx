@@ -1,15 +1,14 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 // import {useSelector} from 'react-redux';
 // import { selectCartItemsById } from '../Slices/CartSlice';
 
-
-const CartIcon = () => {
+const CartSummary = () => {
   const navigation = useNavigation();
-//   const totalItems=useSelector(state=>selectCartItemsById(state,item.id));
-//   const cartItems = useSelector((state) => state.cart?.items || []);
-// if (!cartItems.length ) return null;
+  // const totalItems = useSelector(state => selectCartItemsById(state, item.id));
+  // const cartItems = useSelector((state) => state.cart?.items || []);
+  // if (!cartItems.length) return null;
 
   return (
     <View style={styles.container}>
@@ -26,7 +25,7 @@ const CartIcon = () => {
   );
 };
 
-export default CartIcon;
+export default CartSummary;
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,

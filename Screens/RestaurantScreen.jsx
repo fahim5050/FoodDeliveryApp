@@ -15,6 +15,8 @@ import DishRow from '../Components/DishRow';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFoodCategoriesByBranchId } from '../Utils/Apis';
 import { useFocusEffect } from '@react-navigation/native'; // <-- Import useFocusEffect
+import CartIcon from '../Components/cartIcon/cartIcon';
+
 
 const RestaurantScreen = () => {
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/restaurant/';
@@ -24,7 +26,7 @@ const RestaurantScreen = () => {
   const dispatch = useDispatch();
 
   const { productVariants = [], status } = useSelector((state) => state.data); // Default to empty array if undefined
-
+  // console.log('productVariants:', productVariants);
   // Fetch categories when the screen is focused
   useFocusEffect(
     useCallback(() => {
@@ -62,6 +64,7 @@ const RestaurantScreen = () => {
             style={styles.backButton}>
             <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
           </TouchableOpacity>
+
         </View>
 
         {/* Restaurant Details */}

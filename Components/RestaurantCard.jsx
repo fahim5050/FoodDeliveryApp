@@ -13,7 +13,7 @@ const RestaurantCard = ({item}) => {
   const navigation = useNavigation();
   // Example variable height for image based on item properties
   const imageHeight = item.large ? 160 : 120; // Adjust size based on your condition
-  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/restaurant/';
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/Logos/';
   return (
     <TouchableWithoutFeedback
       onPress={() => navigation.navigate('Restaurant', {...item})}>
@@ -22,8 +22,8 @@ const RestaurantCard = ({item}) => {
 <Image
   style={styles.image}
   source={
-    item.imageName
-      ? { uri: `${BASE_IMAGE_URL}${item.imageName}` } // Use the URL if it exists
+    item.branchLogoName
+      ? { uri: `${BASE_IMAGE_URL}${item.branchLogoName}` } // Use the URL if it exists
       : require('../Assets/restaurants/download.jpeg') // Fallback to local image
   }
 />
