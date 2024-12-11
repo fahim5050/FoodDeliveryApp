@@ -19,15 +19,14 @@ import CartIcon from '../Components/cartIcon/cartIcon';
 
 
 const RestaurantScreen = () => {
-  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/restaurant/';
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/Logos/';
   const { params } = useRoute();
-  const { branchName, address, imageName, id, description, star, review, category } = params;
+  const { branchName, address, branchLogoName, id, description, star, review, category } = params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const { productVariants = [], status } = useSelector((state) => state.data); // Default to empty array if undefined
-  // console.log('productVariants:', productVariants);
-  // Fetch categories when the screen is focused
+
   useFocusEffect(
     useCallback(() => {
       if (id) {
@@ -51,20 +50,31 @@ const RestaurantScreen = () => {
       <ScrollView>
         {/* Restaurant Banner */}
         <View style={styles.imageContainer}>
-        <Image
-  style={styles.image}
-  source={
-    imageName
-      ? { uri: `${BASE_IMAGE_URL}${imageName}` } // Use the URL if it exists
-      : require('../Assets/restaurants/download.jpeg') // Fallback to local image
-  }
-/>
+          {/* Restaurant Logo Image */}
+          <Image
+            style={styles.image}
+            source={
+              branchLogoName
+                ? { uri: `${BASE_IMAGE_URL}${branchLogoName}` } // Use the URL if it exists
+                : require('../Assets/restaurants/download.jpeg') // Fallback to local image
+            }
+          />
+
+          {/* Back Button */}
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
+            style={styles.backButton}
+          >
+            <Icon.ArrowLeft strokeWidth={3} stroke="#fff" />
           </TouchableOpacity>
 
+          {/* Cart Icon positioned at the right corner */}
+          <TouchableOpacity
+             // Navigate to CartScreen when clicked
+            style={styles.cartIconContainer}
+          >
+            <CartIcon onPress={() => navigation.navigate('Cart')} style={styles.cartIcon} />
+          </TouchableOpacity>
         </View>
 
         {/* Restaurant Details */}
@@ -119,18 +129,32 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'relative',
+    width: '100%',
+    height: 200, // Ensure the image container has a defined height for positioning
   },
   image: {
     width: '100%',
-    height: 200,
+    height: '100%',
   },
   backButton: {
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#f97316',
     padding: 6,
     borderRadius: 50,
+  },
+  cartIconContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1, // Ensure it's on top of other content
+    borderRadius: 100,
+    justifyContent:'center',
+    alignItems: 'center',
+  },
+  cartIcon: {
+    // Adjust cart icon size if necessary
   },
   detailsContainer: {
     borderTopLeftRadius: 40,

@@ -8,7 +8,7 @@ const DishRow = ({item}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-//  console.log('image path is ',item.imageName);
+
 const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   const handlePress = () => {
     if (item?.id) {

@@ -1,4 +1,3 @@
-//redux/cartSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -13,30 +12,39 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const newItem = action.payload;
-      const existingItem = state.items.find((item) => item.id === newItem.id);
+      const existingItem = state.items.find((item) => item.foodId === newItem.foodId);
 
       if (existingItem) {
         // Update quantity and price if the item already exists in the cart
         existingItem.quantity += newItem.quantity;
-        state.totalQuantity += newItem.quantity;  // Update totalQuantity based on the new quantity
+        state.totalQuantity += newItem.quantity;
         state.totalPrice += newItem.price * newItem.quantity;
       } else {
         // Add new item to the cart
-        state.items.push(newItem);
-        state.totalQuantity += newItem.quantity;  // Update totalQuantity based on the new item's quantity
-        state.totalPrice += newItem.price * newItem.quantity;
+        state.items.push({ ...newItem, quantity: newItem.quantity || 1 }); // Default quantity to 1 if not provided
+        state.totalQuantity += newItem.quantity || 1;
+        state.totalPrice += newItem.price * (newItem.quantity || 1);
       }
     },
     removeFromCart: (state, action) => {
       const itemId = action.payload;
-      const existingItem = state.items.find((item) => item.id === itemId);
-
+      const existingItem = state.items.find((item) => item.foodId === itemId);
+    
       if (existingItem) {
-        state.totalQuantity -= existingItem.quantity;  // Subtract the quantity of the item being removed
-        state.totalPrice -= existingItem.price * existingItem.quantity;
-        state.items = state.items.filter((item) => item.id !== itemId);
+        if (existingItem.quantity > 1) {
+          // Decrement quantity and update totals
+          existingItem.quantity -= 1;
+          state.totalQuantity -= 1;
+          state.totalPrice -= existingItem.price;
+        } else {
+          // Remove item when quantity is 1
+          state.items = state.items.filter((item) => item.foodId !== itemId);
+          state.totalQuantity -= 1;
+          state.totalPrice -= existingItem.price;
+        }
       }
     },
+    
     clearCart: (state) => {
       state.items = [];
       state.totalQuantity = 0;

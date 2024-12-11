@@ -1,11 +1,21 @@
 import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { featured } from '../constants';
 import * as Icon from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBranches } from '../Utils/Apis';
 
 const AllRestaurant = () => {
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/Logos/';
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const branches = useSelector((state) => state.data?.data);
+
+  useEffect(() => {
+    // Dispatch the fetchBranches action when the component mounts
+    dispatch(fetchBranches());
+  }, [dispatch]);
 
   const handlePress = (item) => {
     navigation.navigate('Restaurant', { ...item });
@@ -23,16 +33,20 @@ const AllRestaurant = () => {
 
       {/* Restaurant List */}
       <FlatList
-        data={featured.restaurants}
+        data={branches}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handlePress(item)} style={styles.itemContainer}>
             {/* Image on the left */}
-            <Image source={item.image} style={styles.image} />
+            <Image  source={
+    item.branchLogoName
+      ? { uri: `${BASE_IMAGE_URL}${item.branchLogoName}` } // Use the URL if it exists
+      : require('../Assets/restaurants/download.jpeg') // Fallback to local image
+  } style={styles.image} />
 
             {/* Details on the right */}
             <View style={styles.detailsContainer}>
-              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.name}>{item.branchName}</Text>
               <View style={styles.ratingContainer}>
                 <Icon.Star fill="gold" stroke="gold" height={15} width={15} />
                 <Text style={styles.ratingText}>{item.star}</Text>

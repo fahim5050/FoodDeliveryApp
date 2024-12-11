@@ -6,7 +6,7 @@ import NotificationIcon from '../../Components/Notification/Notification'; // Im
 import CartIcon from '../cartIcon/cartIcon';
  // Import the CartIcon component
 
-const Header = ({ userName = 'Thomas', userImage, notificationCount = 4, cartCount = 3 }) => {
+const Header = ({ userName = 'Fahim', userImage, notificationCount = 4, cartCount }) => {
   const navigation = useNavigation();
   
   return (

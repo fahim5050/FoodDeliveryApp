@@ -16,10 +16,7 @@ const Categories = () => {
   const selectedCategoryData = featured.restaurants.filter((restaurant) => 
     restaurant.category === categories.find((cat) => cat.id === activeCategory)?.name
   );
-  // console.log("Restaurants Data:", featured.restaurants);
-  // console.log("Categories Data:", categories);
-  // console.log("Active Category ID:", activeCategory);
-  // console.log("Selected Category Data:", selectedCategoryData);
+  
   return (
     <View style={styles.container}>
       <ScrollView

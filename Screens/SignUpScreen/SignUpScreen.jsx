@@ -6,10 +6,8 @@ const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
   const handleSignUp = () => {
     // Handle sign-up logic here
-    // console.log('Signed up:', name, email, password);
   };
 
   return (

@@ -8,18 +8,22 @@ import {
   View,
 } from 'react-native';
 import * as Icon from 'react-native-feather';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart } from '../redux/CartSlice';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {clearCart, removeFromCart} from '../redux/CartSlice';
 
 const CartScreen = () => {
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   const navigation = useNavigation();
-  const cartItems = useSelector(state => state.cart.items); 
+  const cartItems = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
   // Calculate totals
   const getSubtotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0,
+    );
   };
 
   const getTotal = () => {
@@ -32,8 +36,7 @@ const CartScreen = () => {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+          style={styles.backButton}>
           <Icon.ArrowLeft stroke="white" strokeWidth={3} />
         </TouchableOpacity>
         <View>
@@ -56,23 +59,28 @@ const CartScreen = () => {
       {/* Dishes section */}
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
-      >
+        contentContainerStyle={styles.scrollViewContent}>
         {cartItems.length > 0 ? (
           cartItems.map((dish, index) => (
             <View style={styles.dishContainer} key={index}>
               <Text style={styles.dishQuantity}>{dish.quantity} x</Text>
               <Image
                 style={styles.dishImage}
-                source={{ uri: dish.foodImageName || require('../Assets/dishes/download2.jpeg') }}
+                source={{uri: `${BASE_IMAGE_URL}${dish.foodImageName}`}} // Append the image name to BASE_IMAGE_URL
               />
               <Text style={styles.dishName}>{dish.foodName}</Text>
+              <Text style={styles.dishVariant}>{dish.variant}</Text>
               <Text style={styles.dishPrice}>${dish.price}</Text>
-              <TouchableOpacity 
-                style={styles.iconButton} 
-                onPress={() => dispatch(removeFromCart(dish.id))} // Dispatch remove from cart action
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => dispatch(removeFromCart(dish.foodId))} // Use foodId instead of id
               >
-                <Icon.Minus strokeWidth={2} height={20} width={20} stroke="white" />
+                <Icon.Minus
+                  strokeWidth={2}
+                  height={20}
+                  width={20}
+                  stroke="white"
+                />
               </TouchableOpacity>
             </View>
           ))
@@ -80,6 +88,18 @@ const CartScreen = () => {
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
         )}
       </ScrollView>
+      {/* Conditional Clear Cart or Go for Ordering */}
+      {cartItems.length > 0 ? (
+        <Text style={styles.clearCartText} onPress={() => dispatch(clearCart())}>
+          Clear Cart
+        </Text>
+      ) : (
+        <Text
+          style={styles.goForOrderingText}
+          onPress={() => navigation.navigate('Home')}>
+          Go for Ordering
+        </Text>
+      )}
 
       {/* Total section */}
       <View style={styles.totalContainer}>
@@ -97,8 +117,7 @@ const CartScreen = () => {
         </View>
         <TouchableOpacity
           style={styles.placeOrderButton}
-          onPress={() => navigation.navigate('OrderPreparing')}
-        >
+          onPress={() => navigation.navigate('OrderPreparing')}>
           <Text style={styles.placeOrderText}>Place Order</Text>
         </TouchableOpacity>
       </View>
@@ -142,7 +161,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
     shadowColor: '#fac6a2',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 8,
@@ -177,7 +196,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     marginHorizontal: 10,
     shadowColor: '#fac6a2',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 8,
@@ -205,6 +224,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     paddingLeft: 8,
+  },
+  clearCartText: {
+    textAlign: 'center',
+    color: 'red',
+    marginBottom: 5,
+  },
+  goForOrderingText: {
+    textAlign: 'center',
+    color: '#f97316',
+    marginBottom: 5,
+  },
+  dishVariant: {
+    color: 'gray',
+    flex: 1,
+    paddingLeft: 10,
+    fontSize: 13,
   },
   iconButton: {
     padding: 6,

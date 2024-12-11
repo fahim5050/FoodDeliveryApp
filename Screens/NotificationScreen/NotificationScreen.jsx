@@ -39,7 +39,6 @@ const notifications = [
   },
 ];
 
-// console.log(notifications.icon)
 
 const NotificationScreen = () => {
   const navigation = useNavigation(); // Use the navigation hook

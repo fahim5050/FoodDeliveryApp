@@ -1,30 +1,39 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import * as Icon from 'react-native-feather';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../../redux/CartSlice';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+ 
+} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {addToCart} from '../../redux/CartSlice';
+import CartIcon from '../cartIcon/cartIcon';
 
-const SubDishes = ({ route }) => {
+const SubDishes = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { subDishes, dishName, dishImage } = route.params;
+  const {subDishes, dishName, dishImage} = route.params;
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
 
   // State for managing modal visibility and selected item
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [counter, setCounter] = useState(1);  // Counter for item quantity
+  const [counter, setCounter] = useState(1); // Counter for item quantity
 
-  const handleAddToCart = (item) => {
-    const itemToAdd = { ...item, quantity: counter };
+  const handleAddToCart = item => {
+    const itemToAdd = {...item, quantity: counter};
     dispatch(addToCart(itemToAdd));
     alert(`${item.foodName} has been added to your cart!`);
     setModalVisible(false); // Close modal after adding to cart
   };
 
-
-  const handleCounterChange = (operation) => {
+  const handleCounterChange = operation => {
     if (operation === 'increment') {
       setCounter(prev => prev + 1);
     } else if (operation === 'decrement' && counter > 1) {
@@ -32,11 +41,11 @@ const SubDishes = ({ route }) => {
     }
   };
 
-  const handleModal = (item) => {
+  const handleModal = item => {
     setSelectedItem(item); // Set selected item
+    setCounter(1); // Reset counter to 1
     setModalVisible(true); // Open modal
   };
-  console.log(subDishes.map(item => item.foodId));
 
   return (
     <View style={styles.container}>
@@ -44,7 +53,7 @@ const SubDishes = ({ route }) => {
         <Image
           source={
             dishImage
-              ? { uri: `${BASE_IMAGE_URL}${dishImage}` }
+              ? {uri: `${BASE_IMAGE_URL}${dishImage}`}
               : require('../../Assets/restaurants/download.jpeg')
           }
           style={styles.mainDishImage}
@@ -52,23 +61,29 @@ const SubDishes = ({ route }) => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
-          <Icon.ArrowLeft strokeWidth={3} stroke="#f97316" />
+          <Icon.ArrowLeft strokeWidth={3} stroke="#fff" />
         </TouchableOpacity>
+         {/* Cart Icon positioned at the right corner */}
+         <TouchableOpacity
+             // Navigate to CartScreen when clicked
+            style={styles.cartIconContainer}
+          >
+            <CartIcon onPress={() => navigation.navigate('Cart')} style={styles.cartIcon} />
+          </TouchableOpacity>
       </View>
       <View style={styles.subDishesContainer}>
         <Text style={styles.title}>{dishName} - Variants</Text>
         {subDishes.length > 0 ? (
           <FlatList
             data={subDishes}
-            keyExtractor={(item) => item.foodId.toString()}
-
-            renderItem={({ item }) => (
+            keyExtractor={item => item.foodId.toString()}
+            renderItem={({item}) => (
               <View style={styles.subDishContainer}>
                 <Image
                   style={styles.image}
                   source={
                     item.foodImageName
-                      ? { uri: `${BASE_IMAGE_URL}${item.foodImageName}` }
+                      ? {uri: `${BASE_IMAGE_URL}${item.foodImageName}`}
                       : require('../../Assets/dishes/download2.jpeg')
                   }
                 />
@@ -106,14 +121,16 @@ const SubDishes = ({ route }) => {
             <View style={styles.modalContainer}>
               <Image
                 source={
-                  selectedItem.imageName
-                    ? { uri: `${BASE_IMAGE_URL}${selectedItem.imageName}` }
+                  selectedItem.foodImageName
+                    ? {uri: `${BASE_IMAGE_URL}${selectedItem.foodImageName}`}
                     : require('../../Assets/dishes/download2.jpeg')
                 }
                 style={styles.modalImage}
               />
               <Text style={styles.modalFoodName}>{selectedItem.foodName}</Text>
-              <Text style={styles.modalDescription}>{selectedItem.variant}</Text>
+              <Text style={styles.modalDescription}>
+                {selectedItem.variant}
+              </Text>
               <Text style={styles.modalPrice}>${selectedItem.price}</Text>
               <View style={styles.counterContainer}>
                 <TouchableOpacity
@@ -135,10 +152,15 @@ const SubDishes = ({ route }) => {
                 <Text style={styles.modalAddToCartText}>Add to Cart</Text>
               </TouchableOpacity>
               <TouchableOpacity
-  onPress={() => setModalVisible(false)}
-  style={styles.closeModalButton}>
-  <Icon.X stroke='white' with={25} height={25} style={styles.closeModalText}/>
-</TouchableOpacity>
+                onPress={() => setModalVisible(false)}
+                style={styles.closeModalButton}>
+                <Icon.X
+                  stroke="white"
+                  with={25}
+                  height={25}
+                  style={styles.closeModalText}
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -162,9 +184,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#f97316',
     padding: 6,
     borderRadius: 50,
+  },
+  cartIconContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1, // Ensure it's on top of other content
+    borderRadius: 100,
+    justifyContent:'center',
+    alignItems: 'center',
+  },
+  cartIcon: {
+    // Adjust cart icon size if necessary
   },
   subDishesContainer: {
     flex: 1,
@@ -191,7 +225,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 10,
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 4,
     elevation: 6,
   },
@@ -227,8 +261,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 8,
   },
-  addToCartText:{
-color:'white'
+  addToCartText: {
+    color: 'white',
   },
   noItemsContainer: {
     flex: 1,
@@ -287,9 +321,9 @@ color:'white'
     backgroundColor: '#f97316',
     borderRadius: 50,
     padding: 10,
-    width:50,
-    height:50,
-    alignItems:'center',
+    width: 50,
+    height: 50,
+    alignItems: 'center',
     marginHorizontal: 10,
   },
   counterText: {
@@ -326,7 +360,6 @@ color:'white'
     padding: 8,
     borderRadius: 50, // Rounded button
   },
-  
 });
 
 export default SubDishes;

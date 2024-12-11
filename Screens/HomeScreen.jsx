@@ -6,40 +6,46 @@ import {
   Text,
   TextInput,
   View,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Icon from 'react-native-feather';
-import Categories from '../Components/Categories';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBranches } from '../Utils/Apis';
 import { featured } from '../constants';
 import FeatureRow from '../Components/FeatureRow';
 import Header from '../Components/Header/Header';
-import BannerSlider from '../Components/BannerSlider/BannerSlider';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchBranches } from '../Utils/Apis';
 
 const HomeScreen = () => {
-
   const dispatch = useDispatch();
   const branches = useSelector((state) => state.data?.data);
+  
+  // State for search query and filtered results
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredBranches, setFilteredBranches] = useState([]);
 
   useEffect(() => {
     // Dispatch the fetchBranches action when the component mounts
     dispatch(fetchBranches());
   }, [dispatch]);
 
-  // Log the branches data to the console
+  useEffect(() => {
+    if (searchQuery && branches.length > 0) {
+      // Filter branches based on the search query,
+      const results = branches.filter((branch) => {
+        const branchName = branch.branchName?.toLowerCase(); // Existing filter for branch name
+        return (
+          (branchName && branchName.includes(searchQuery.toLowerCase()))
+        );
+      });
+      setFilteredBranches(results);
+    } else {
+      setFilteredBranches([]); // If no search query or no branches, clear results
+    }
+  }, [searchQuery, branches]);
+  
 
-  // useEffect(() => {
-  //   if (branches) {
-  //     branches.forEach((branch) => {
-  //       const { branchName, branchLogoName} = branch;
-  //       console.log('Branch Name:', branchName);
-  //       console.log('Branch Logo Name:', branchLogoName);
-  //       console.log('Email:');
-
-  //     });
-  //   }
-  // }, [branches]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -57,6 +63,8 @@ const HomeScreen = () => {
             <TextInput
               placeholder="Search for bite food"
               style={styles.textInput}
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)} // Update searchQuery on text change
             />
             <View style={styles.location}>
               <Icon.MapPin stroke="gray" height="20" width="20" />
@@ -73,21 +81,26 @@ const HomeScreen = () => {
           </View>
         </View>
 
+        {/* Suggestions */}
+        {searchQuery && (
+          <View style={styles.suggestionsContainer}>
+            {filteredBranches.length > 0 ? (
+              filteredBranches.map((food, index) => (
+                <TouchableOpacity key={index} style={styles.suggestionItem}>
+                  {/* <Image  /> */}
+                  <Text>{food.branchName}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text>No results found</Text>
+            )}
+          </View>
+        )}
+
         {/* Scrollable Content */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}>
-          {/* Categories */}
-          <View style={styles.Categories}>
-            <Categories />
-          </View>
-          <View>
-            <Text style={styles.Title}>Delicious Picks Just for You on <Text style={styles.BiteBase}>BiteBase</Text></Text>
-          </View>
-          {/* Banner slider */}
-          {/* <View style={styles.banner}>
-            <BannerSlider />
-          </View> */}
           {/* Featured Section */}
           <View style={styles.featureContainer}>
             {[featured].map((item, index) => (
@@ -145,9 +158,6 @@ const styles = StyleSheet.create({
     borderLeftColor: 'gray',
     paddingLeft: 2,
   },
-  userLocation: {
-    color: 'gray',
-  },
   sliderIcon: {
     padding: 5,
     borderRadius: 100,
@@ -164,10 +174,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   BiteBase: {
-    color: 'green'
+    color: 'green',
   },
-  banner: {
-    padding: 15,
-    // marginTop: 10,
+  suggestionsContainer: {
+    position: 'absolute',
+    top: 80,
+    left: 15,
+    right: 15,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    // borderWidth: 1,
+    // borderColor: 'gray',
+    maxHeight: 200,
+    padding: 10,
+    zIndex: 10,
+  },
+  suggestionItem: {
+    paddingVertical: 5,
   },
 });

@@ -1,9 +1,13 @@
 // CartIcon.js
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux'; // Import the useSelector hook
 import * as Icon from 'react-native-feather';
 
-const CartIcon = ({ cartCount = 0, onPress }) => {
+const CartIcon = ({ onPress }) => {
+  // Fetch the total quantity from the Redux store
+  const cartCount = useSelector((state) => state.cart.items.length);
+
   return (
     <TouchableOpacity onPress={onPress} style={[styles.iconWrapper, styles.cartIcon]}>
       <Icon.ShoppingCart stroke="white" width={25} height={25} />
@@ -23,6 +27,9 @@ const styles = StyleSheet.create({
   },
   cartIcon: {
     marginLeft: 20,
+    backgroundColor:'#f97316',
+    borderRadius:100,
+    padding:6,
   },
   badge: {
     position: 'absolute',
