@@ -9,52 +9,75 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import * as Icon from 'react-native-feather';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchBranches } from '../Utils/Apis';
-import { featured } from '../constants';
+import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchBranches} from '../Utils/Apis';
+import {featured} from '../constants';
 import FeatureRow from '../Components/FeatureRow';
 import Header from '../Components/Header/Header';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
-  const branches = useSelector((state) => state.data?.data);
-  
-  // State for search query and filtered results
+  const branches = useSelector(state => state.data?.data);
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
+  // State for search query and search results
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredBranches, setFilteredBranches] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Fetch branches initially
   useEffect(() => {
-    // Dispatch the fetchBranches action when the component mounts
     dispatch(fetchBranches());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (searchQuery && branches.length > 0) {
-      // Filter branches based on the search query,
-      const results = branches.filter((branch) => {
-        const branchName = branch.branchName?.toLowerCase(); // Existing filter for branch name
-        return (
-          (branchName && branchName.includes(searchQuery.toLowerCase()))
-        );
-      });
-      setFilteredBranches(results);
-    } else {
-      setFilteredBranches([]); // If no search query or no branches, clear results
+  // Function to fetch search results from the API
+  const fetchSearchResults = async query => {
+    if (!query) {
+      setSearchResults([]); // Clear results if query is empty
+      return;
     }
-  }, [searchQuery, branches]);
-  
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(
+        'https://bitebaseapiservices.paktech24.com/api/Food/GetBranchCategoryFood',
+        {
+          params: {query}, // Replace with the actual parameter name if needed
+        },
+      );
+
+      setSearchResults(response.data || []); // Update results with API response
+    } catch (err) {
+      setError('Failed to fetch search results. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Trigger search API on search query change
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchSearchResults(searchQuery);
+    }, 500); // Debounce to prevent frequent API calls
+
+    return () => clearTimeout(delayDebounceFn); // Cleanup
+  }, [searchQuery]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
-      {/* Header with no padding */}
+      {/* Header */}
       <View style={styles.headerContainer}>
         <Header />
       </View>
 
-      {/* Main content with padding */}
+      {/* Main Content */}
       <View style={styles.mainContent}>
         {/* Search Bar */}
         <View style={styles.searchBar}>
@@ -64,7 +87,7 @@ const HomeScreen = () => {
               placeholder="Search for bite food"
               style={styles.textInput}
               value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)} // Update searchQuery on text change
+              onChangeText={text => setSearchQuery(text)}
             />
             <View style={styles.location}>
               <Icon.MapPin stroke="gray" height="20" width="20" />
@@ -84,13 +107,42 @@ const HomeScreen = () => {
         {/* Suggestions */}
         {searchQuery && (
           <View style={styles.suggestionsContainer}>
-            {filteredBranches.length > 0 ? (
-              filteredBranches.map((food, index) => (
-                <TouchableOpacity key={index} style={styles.suggestionItem}>
-                  {/* <Image  /> */}
-                  <Text>{food.branchName}</Text>
-                </TouchableOpacity>
-              ))
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : error ? (
+              <Text style={{color: 'red'}}>{error}</Text>
+            ) : searchResults.length > 0 ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={styles.suggestionsScroll}>
+                {searchResults.map((item, index) => (
+                  <TouchableOpacity key={index} style={styles.suggestionItem}>
+                    <View style={styles.resultRow}>
+                      {/* Left-side Image */}
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={
+                            item.foodImageName
+                              ? {uri: `${BASE_IMAGE_URL}${item.foodImageName}`} // Use the URL if it exists
+                              : require('../Assets/images/profile.jpg') // Fallback to local image
+                          }
+                          style={styles.foodImage}
+                        />
+                      </View>
+                      {/* Right-side Text */}
+                      <View style={styles.textContainer}>
+                        <Text style={styles.foodName}>
+                          {item.foodName || 'No food name'}
+                        </Text>
+                        <Text style={{color:'#f97316'}}>Price: ${item.price}</Text>
+                        <Text style={styles.restaurantName}>
+                          {item.branchName || 'No restaurant name'}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             ) : (
               <Text>No results found</Text>
             )}
@@ -100,7 +152,7 @@ const HomeScreen = () => {
         {/* Scrollable Content */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}>
+          contentContainerStyle={{paddingBottom: 20}}>
           {/* Featured Section */}
           <View style={styles.featureContainer}>
             {[featured].map((item, index) => (
@@ -126,10 +178,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   headerContainer: {
-    padding: 0, // No padding for header
+    padding: 0,
   },
   mainContent: {
-    padding: 15, // Padding for main content except header
+    padding: 15,
   },
   searchBar: {
     flexDirection: 'row',
@@ -166,16 +218,6 @@ const styles = StyleSheet.create({
   featureContainer: {
     marginTop: 5,
   },
-  Title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  BiteBase: {
-    color: 'green',
-  },
   suggestionsContainer: {
     position: 'absolute',
     top: 80,
@@ -183,13 +225,41 @@ const styles = StyleSheet.create({
     right: 15,
     backgroundColor: 'white',
     borderRadius: 10,
-    // borderWidth: 1,
-    // borderColor: 'gray',
-    maxHeight: 200,
+    // maxHeight:"500",
     padding: 10,
     zIndex: 10,
   },
   suggestionItem: {
     paddingVertical: 5,
+  },
+  resultRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  imageContainer: {
+    marginRight: 10,
+  },
+  foodImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: '#f0f0f0', // Placeholder background
+  },
+  textContainer: {
+    flex: 1,
+  },
+  foodName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  restaurantName: {
+    fontSize: 14,
+    color: 'gray',
+    marginTop: 2,
+  },
+  suggestionsScroll: {
+    maxHeight: 700, // Limit the height to make it scrollable
   },
 });
