@@ -13,6 +13,7 @@ import NotificationScreen from '../Screens/NotificationScreen/NotificationScreen
 import SubDishes from '../Components/Subdishes/Subdishes.jsx';
 import SignInScreen from '../Screens/SignInScreen/SignInScreen.jsx';
 import SignUpScreen from '../Screens/SignUpScreen/SignUpScreen.jsx';
+import SingleProduct from '../Components/SingleProduct/SingleProduct.jsx';
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
   return (
@@ -30,6 +31,7 @@ const Navigation = () => {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Notifications" component={NotificationScreen} />
       <Stack.Screen name="SubDishes" component={SubDishes} />
+      <Stack.Screen name="SingleProduct" component={SingleProduct} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
     </Stack.Navigator>
     </NavigationContainer>

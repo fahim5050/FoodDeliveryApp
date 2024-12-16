@@ -17,9 +17,13 @@ import {fetchBranches} from '../Utils/Apis';
 import {featured} from '../constants';
 import FeatureRow from '../Components/FeatureRow';
 import Header from '../Components/Header/Header';
+import { useNavigation } from '@react-navigation/native';
+import Categories from '../Components/Categories';
+import BannerSlider from '../Components/BannerSlider/BannerSlider';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const branches = useSelector(state => state.data?.data);
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   // State for search query and search results
@@ -39,19 +43,29 @@ const HomeScreen = () => {
       setSearchResults([]); // Clear results if query is empty
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await axios.get(
         'https://bitebaseapiservices.paktech24.com/api/Food/GetBranchCategoryFood',
         {
-          params: {query}, // Replace with the actual parameter name if needed
+          params: { query }, // Pass the query to the API
         },
       );
-
-      setSearchResults(response.data || []); // Update results with API response
+  
+      const filteredResults = response.data.filter(item => 
+        item.foodName && item.foodName.toLowerCase().includes(query.toLowerCase())
+      );
+  
+      // Update results with filtered API response
+      setSearchResults(filteredResults);
+  
+      // If there are no filtered results, show 'No results found'
+      if (filteredResults.length === 0) {
+        setError('No results found');
+      }
     } catch (err) {
       setError('Failed to fetch search results. Please try again.');
       console.error(err);
@@ -59,6 +73,7 @@ const HomeScreen = () => {
       setLoading(false);
     }
   };
+  
 
   // Trigger search API on search query change
   useEffect(() => {
@@ -68,6 +83,10 @@ const HomeScreen = () => {
 
     return () => clearTimeout(delayDebounceFn); // Cleanup
   }, [searchQuery]);
+  const handleItemPress = item => {
+    navigation.navigate('SingleProduct', {item}); // Pass the item as a parameter
+    setSearchQuery('')
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,7 +135,8 @@ const HomeScreen = () => {
                 showsVerticalScrollIndicator={false}
                 style={styles.suggestionsScroll}>
                 {searchResults.map((item, index) => (
-                  <TouchableOpacity key={index} style={styles.suggestionItem}>
+                  <TouchableOpacity key={index} style={styles.suggestionItem}
+                  onPress={() => handleItemPress(item)}>
                     <View style={styles.resultRow}>
                       {/* Left-side Image */}
                       <View style={styles.imageContainer}>
@@ -148,7 +168,9 @@ const HomeScreen = () => {
             )}
           </View>
         )}
-
+        <View>
+          <Categories/>
+        </View>
         {/* Scrollable Content */}
         <ScrollView
           showsVerticalScrollIndicator={false}

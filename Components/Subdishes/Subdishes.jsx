@@ -25,6 +25,7 @@ const SubDishes = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [counter, setCounter] = useState(1); // Counter for item quantity
+ 
 
   const handleAddToCart = item => {
     const itemToAdd = {...item, quantity: counter};
