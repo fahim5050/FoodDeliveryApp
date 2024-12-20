@@ -190,7 +190,7 @@ const lightTheme = StyleSheet.create({
   textInput: {color: '#000'},
   locationText: {color: '#666'},
   suggestionsContainer: {backgroundColor: '#fff'},
-  loadingText: {color: '#000'},
+  loadingText: {color: '#111'},
   errorText: {color: 'red'},
   foodName: {color: '#333', fontWeight: 'bold'},
   priceText: {color: '#f97316'},
@@ -198,7 +198,7 @@ const lightTheme = StyleSheet.create({
 });
 
 const darkTheme = StyleSheet.create({
-  container: {backgroundColor: '#000',lightBackgroundColor:'#333'},
+  container: {backgroundColor: '#111',lightBackgroundColor:'#333'},
   searchBarInputContainer:{backgroundColor: '#000',borderColor:'#fff',borderWidth:1},
   textInput: {color: '#fff'},
   locationText: {color: '#bbb'},

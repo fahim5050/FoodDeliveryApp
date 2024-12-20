@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   darkContainer: {
-    backgroundColor: '#333', // Dark background
+    backgroundColor: '#111', // Dark background
   },
   scrollContent: {
     paddingBottom: 20,
