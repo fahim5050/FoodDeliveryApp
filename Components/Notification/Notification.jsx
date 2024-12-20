@@ -2,11 +2,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Icon from 'react-native-feather';
+import { useSelector } from 'react-redux';
 
 const NotificationIcon = ({ notificationCount = 0, onPress }) => {
+  const darkMode = useSelector(state => state.theme.darkMode); 
+  
   return (
     <TouchableOpacity onPress={onPress} style={styles.iconWrapper}>
-      <Icon.Bell stroke="white" width={25} height={25} />
+      <Icon.Bell  stroke={darkMode ? '#000' : '#fff'}
+        width={25}
+        height={25} />
       {notificationCount > 0 && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{notificationCount}</Text>

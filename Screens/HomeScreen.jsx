@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
 import * as Icon from 'react-native-feather';
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,52 +17,47 @@ import {fetchBranches} from '../Utils/Apis';
 import {featured} from '../constants';
 import FeatureRow from '../Components/FeatureRow';
 import Header from '../Components/Header/Header';
-import { useNavigation } from '@react-navigation/native';
 import Categories from '../Components/Categories';
-import BannerSlider from '../Components/BannerSlider/BannerSlider';
+import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const branches = useSelector(state => state.data?.data);
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
-  // State for search query and search results
+  const darkMode = useSelector(state => state.theme.darkMode);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch branches initially
   useEffect(() => {
     dispatch(fetchBranches());
   }, [dispatch]);
 
-  // Function to fetch search results from the API
   const fetchSearchResults = async query => {
     if (!query) {
-      setSearchResults([]); // Clear results if query is empty
+      setSearchResults([]);
       return;
     }
-  
+
     setLoading(true);
     setError(null);
-  
+
     try {
       const response = await axios.get(
         'https://bitebaseapiservices.paktech24.com/api/Food/GetBranchCategoryFood',
         {
-          params: { query }, // Pass the query to the API
+          params: {query},
         },
       );
-  
-      const filteredResults = response.data.filter(item => 
-        item.foodName && item.foodName.toLowerCase().includes(query.toLowerCase())
+      const filteredResults = response.data.filter(item =>
+        item.foodName?.toLowerCase().includes(query.toLowerCase()),
       );
-  
-      // Update results with filtered API response
+
       setSearchResults(filteredResults);
-  
-      // If there are no filtered results, show 'No results found'
+
       if (filteredResults.length === 0) {
         setError('No results found');
       }
@@ -73,109 +68,107 @@ const HomeScreen = () => {
       setLoading(false);
     }
   };
-  
 
-  // Trigger search API on search query change
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       fetchSearchResults(searchQuery);
-    }, 500); // Debounce to prevent frequent API calls
+    }, 500);
 
-    return () => clearTimeout(delayDebounceFn); // Cleanup
+    return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
+
   const handleItemPress = item => {
-    navigation.navigate('SingleProduct', {item}); // Pass the item as a parameter
-    setSearchQuery('')
+    navigation.navigate('SingleProduct', {item});
+    setSearchQuery('');
   };
 
+  const themeStyles = darkMode ? darkTheme : lightTheme;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
-      {/* Header */}
+    <SafeAreaView style={[styles.container, themeStyles.container]}>
+      <StatusBar
+        barStyle={'light-content'}
+        backgroundColor={themeStyles.container.lightBackgroundColor}
+      />
+
       <View style={styles.headerContainer}>
         <Header />
       </View>
 
-      {/* Main Content */}
       <View style={styles.mainContent}>
-        {/* Search Bar */}
         <View style={styles.searchBar}>
-          <View style={styles.searchBarIcon}>
-            <Icon.Search stroke="gray" width="25" height="25" />
+          <View style={[styles.searchBarInputContainer, themeStyles.searchBarInputContainer]}>
+            <Icon.Search stroke="gray" width={20} height={20} />
             <TextInput
               placeholder="Search for bite food"
-              style={styles.textInput}
+              placeholderTextColor={darkMode ? 'gray' : '#888'}
+              style={[styles.textInput, themeStyles.textInput]}
               value={searchQuery}
               onChangeText={text => setSearchQuery(text)}
             />
-            <View style={styles.location}>
-              <Icon.MapPin stroke="gray" height="20" width="20" />
-              <Text>Deans Peshawar</Text>
+            <View style={styles.locationContainer}>
+              <Icon.MapPin stroke="gray" width={18} height={18} />
+              <Text style={themeStyles.locationText}>Deans Peshawar</Text>
             </View>
           </View>
-          <View style={styles.sliderIcon}>
+          <TouchableOpacity style={styles.sliderIcon}>
             <Icon.Sliders
               stroke="white"
-              height="25"
-              width="25"
+              width={20}
+              height={20}
               strokeWidth={2.5}
             />
-          </View>
+          </TouchableOpacity>
         </View>
 
-        {/* Suggestions */}
         {searchQuery && (
-          <View style={styles.suggestionsContainer}>
+          <View
+            style={[
+              styles.suggestionsContainer,
+              themeStyles.suggestionsContainer,
+            ]}>
             {loading ? (
-              <Text>Loading...</Text>
+              <Text style={themeStyles.loadingText}>Loading...</Text>
             ) : error ? (
-              <Text style={{color: 'red'}}>{error}</Text>
-            ) : searchResults.length > 0 ? (
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={styles.suggestionsScroll}>
+              <Text style={themeStyles.errorText}>{error}</Text>
+            ) : (
+              <ScrollView style={styles.suggestionsScroll}>
                 {searchResults.map((item, index) => (
-                  <TouchableOpacity key={index} style={styles.suggestionItem}
-                  onPress={() => handleItemPress(item)}>
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.suggestionItem}
+                    onPress={() => handleItemPress(item)}>
                     <View style={styles.resultRow}>
-                      {/* Left-side Image */}
-                      <View style={styles.imageContainer}>
-                        <Image
-                          source={
-                            item.foodImageName
-                              ? {uri: `${BASE_IMAGE_URL}${item.foodImageName}`} // Use the URL if it exists
-                              : require('../Assets/images/profile.jpg') // Fallback to local image
-                          }
-                          style={styles.foodImage}
-                        />
-                      </View>
-                      {/* Right-side Text */}
+                      <Image
+                        source={
+                          item.foodImageName
+                            ? {uri: `${BASE_IMAGE_URL}${item.foodImageName}`}
+                            : require('../Assets/images/profile.jpg')
+                        }
+                        style={styles.foodImage}
+                      />
                       <View style={styles.textContainer}>
-                        <Text style={styles.foodName}>
-                          {item.foodName || 'No food name'}
+                        <Text style={themeStyles.foodName}>
+                          {item.foodName}
                         </Text>
-                        <Text style={{color:'#f97316'}}>Price: ${item.price}</Text>
-                        <Text style={styles.restaurantName}>
-                          {item.branchName || 'No restaurant name'}
+                        <Text style={themeStyles.priceText}>
+                          Price: ${item.price}
+                        </Text>
+                        <Text style={themeStyles.restaurantName}>
+                          {item.branchName}
                         </Text>
                       </View>
                     </View>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-            ) : (
-              <Text>No results found</Text>
             )}
           </View>
         )}
-        <View>
-          <Categories/>
-        </View>
-        {/* Scrollable Content */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 20}}>
-          {/* Featured Section */}
+
+        <Categories />
+
+        <ScrollView contentContainerStyle={styles.scrollableContent}>
           <View style={styles.featureContainer}>
             {[featured].map((item, index) => (
               <FeatureRow
@@ -192,96 +185,64 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+const lightTheme = StyleSheet.create({
+  container: {backgroundColor: '#fff',lightBackgroundColor:'#f97316'},
+  textInput: {color: '#000'},
+  locationText: {color: '#666'},
+  suggestionsContainer: {backgroundColor: '#fff'},
+  loadingText: {color: '#000'},
+  errorText: {color: 'red'},
+  foodName: {color: '#333', fontWeight: 'bold'},
+  priceText: {color: '#f97316'},
+  restaurantName: {color: 'gray'},
+});
+
+const darkTheme = StyleSheet.create({
+  container: {backgroundColor: '#000',lightBackgroundColor:'#333'},
+  searchBarInputContainer:{backgroundColor: '#000',borderColor:'#fff',borderWidth:1},
+  textInput: {color: '#fff'},
+  locationText: {color: '#bbb'},
+  suggestionsContainer: {backgroundColor: '#222'},
+  loadingText: {color: '#fff'},
+  errorText: {color: 'red'},
+  foodName: {color: '#fff', fontWeight: 'bold'},
+  priceText: {color: '#f97316'},
+  restaurantName: {color: '#bbb'},
+});
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  headerContainer: {
-    padding: 0,
-  },
-  mainContent: {
-    padding: 15,
-  },
-  searchBar: {
+  container: {flex: 1},
+  headerContainer: {paddingHorizontal: 0}, // Remove padding from left and right
+  mainContent: {padding: 15},
+  searchBar: {flexDirection: 'row', alignItems: 'center', marginBottom: 15},
+  searchBarInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 4,
-    paddingBottom: 3,
-    gap: 5,
-  },
-  searchBarIcon: {
-    flexDirection: 'row',
     flex: 1,
-    alignItems: 'center',
-    padding: 3,
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: 'gray',
-  },
-  textInput: {
-    flex: 1,
-    marginLeft: 2,
-  },
-  location: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderLeftWidth: 2,
-    borderLeftColor: 'gray',
-    paddingLeft: 2,
-  },
-  sliderIcon: {
+    backgroundColor: '#f0f0f0',
     padding: 5,
-    borderRadius: 100,
-    backgroundColor: '#f97316',
+    borderRadius: 25,
   },
-  featureContainer: {
-    marginTop: 5,
-  },
+  textInput: {flex: 1, marginHorizontal: 10},
+  locationContainer: {flexDirection: 'row', alignItems: 'center'},
+  sliderIcon: {backgroundColor: '#f97316', padding: 10, borderRadius: 25, marginLeft:5},
   suggestionsContainer: {
+    borderRadius: 10,
+    padding: 10,
     position: 'absolute',
     top: 80,
     left: 15,
     right: 15,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    // maxHeight:"500",
-    padding: 10,
     zIndex: 10,
   },
-  suggestionItem: {
-    paddingVertical: 5,
-  },
-  resultRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  imageContainer: {
-    marginRight: 10,
-  },
-  foodImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    backgroundColor: '#f0f0f0', // Placeholder background
-  },
-  textContainer: {
-    flex: 1,
-  },
-  foodName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  restaurantName: {
-    fontSize: 14,
-    color: 'gray',
-    marginTop: 2,
-  },
-  suggestionsScroll: {
-    maxHeight: 700, // Limit the height to make it scrollable
-  },
+  suggestionsScroll: {maxHeight: 300},
+  suggestionItem: {paddingVertical: 10},
+  resultRow: {flexDirection: 'row', alignItems: 'center'},
+  foodImage: {width: 50, height: 50, borderRadius: 10},
+  textContainer: {marginLeft: 10},
+  scrollableContent: {paddingBottom: 20},
+  featureContainer: {marginTop: 10},
 });
+
+
+export default HomeScreen;

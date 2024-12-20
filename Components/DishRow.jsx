@@ -1,15 +1,26 @@
-import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
-import {fetchProductVariantsByCategoryId} from '../Utils/Apis';
+import React, { useState } from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductVariantsByCategoryId } from '../Utils/Apis';
 
-const DishRow = ({item}) => {
+const DishRow = ({ item }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
+  const darkMode = useSelector((state) => state.theme.darkMode); // Access theme state
+  const themeStyles = darkMode ? darkTheme : lightTheme; // Determine styles based on theme
+
+  const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
+
   const handlePress = () => {
     if (item?.id) {
       setIsLoading(true); // Show loading indicator
@@ -36,30 +47,40 @@ const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   // Fallback for missing or undefined data
   if (!item || !item.name || !item.imageName) {
     return (
-      <View style={styles.fallbackContainer}>
-        <Text style={styles.fallbackText}> unavailable.</Text>
+      <View style={[styles.fallbackContainer, themeStyles.fallbackContainer]}>
+        <Text style={[styles.fallbackText, themeStyles.fallbackText]}>
+          Unavailable.
+        </Text>
       </View>
     );
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress} disabled={isLoading}>
+    <TouchableOpacity
+      style={[styles.container, themeStyles.container]}
+      onPress={handlePress}
+      disabled={isLoading}
+    >
       {isLoading ? (
         <ActivityIndicator size="large" color="#f97316" style={styles.loader} />
       ) : (
         <>
-         <Image
-  style={styles.image}
-  source={
-    item.imageName
-      ? { uri: `${BASE_IMAGE_URL}${item.imageName}` } // Use the URL if it exists
-      : require('../Assets/images/profile.jpg') // Fallback to local image
-  }
-/>
+          <Image
+            style={styles.image}
+            source={
+              item.imageName
+                ? { uri: `${BASE_IMAGE_URL}${item.imageName}` }
+                : require('../Assets/images/profile.jpg')
+            }
+          />
           <View style={styles.detailsContainer}>
             <View style={styles.textContainer}>
-              <Text style={styles.dishName}>{item.name}</Text>
-              <Text style={styles.dishDescription}>{item.createdDate}</Text>
+              <Text style={[styles.dishName, themeStyles.dishName]}>
+                {item.name}
+              </Text>
+              <Text style={[styles.dishDescription, themeStyles.dishDescription]}>
+                {item.createdDate}
+              </Text>
             </View>
           </View>
         </>
@@ -70,12 +91,46 @@ const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
 
 export default DishRow;
 
+const lightTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+  },
+  dishName: {
+    color: '#000',
+  },
+  dishDescription: {
+    color: 'gray',
+  },
+  fallbackContainer: {
+    backgroundColor: '#f8f8f8',
+  },
+  fallbackText: {
+    color: '#000',
+  },
+});
+
+const darkTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#333',
+  },
+  dishName: {
+    color: '#fff',
+  },
+  dishDescription: {
+    color: '#ccc',
+  },
+  fallbackContainer: {
+    backgroundColor: '#444',
+  },
+  fallbackText: {
+    color: '#fff',
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
     shadowColor: '#990',
     marginHorizontal: 2,
     marginBottom: 3,
@@ -83,7 +138,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 10,
     shadowOpacity: 0.2,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
   },
@@ -102,35 +157,17 @@ const styles = StyleSheet.create({
   },
   dishName: {
     fontSize: 15,
-    color: 'black',
     fontWeight: 'bold',
   },
   dishDescription: {
-    color: 'gray',
+    fontSize: 12,
   },
-  priceQuantityContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 3,
-    alignItems: 'center',
+  fallbackContainer: {
+    padding: 10,
+    borderRadius: 10,
   },
-  priceText: {
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    padding: 5,
-    borderRadius: 20,
-    backgroundColor: '#f97316',
-    marginHorizontal: 3,
-  },
-  quantityText: {
-    paddingHorizontal: 8,
-    fontSize: 16,
-    color: 'black',
+  fallbackText: {
+    textAlign: 'center',
+    fontSize: 14,
   },
 });

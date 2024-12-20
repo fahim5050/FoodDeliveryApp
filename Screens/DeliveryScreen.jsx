@@ -10,10 +10,12 @@ import {
 import {useSelector} from 'react-redux'; // Import useSelector to get data from Redux store
 import * as Icon from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
+
 const OrderDelivery = () => {
   const navigation = useNavigation();
   // Access the cart data from the Redux store using useSelector
   const {items, totalPrice, totalQuantity} = useSelector(state => state.cart);
+  const darkMode = useSelector(state => state.theme.darkMode);
 
   // Static rider data
   const riderData = {
@@ -25,32 +27,44 @@ const OrderDelivery = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, darkMode ? styles.darkContainer : styles.lightContainer]}>
       <TouchableOpacity
         onPress={() => navigation.navigate('Cart')}
         style={styles.backButton}>
-        <Icon.ArrowLeft strokeWidth={3} stroke="#fff" />
+        <Icon.ArrowLeft strokeWidth={3} stroke= '#fff' />
       </TouchableOpacity>
-      {/* Rider Information Section */}
-      <View style={styles.riderContainer}>
-        <Text style={styles.riderHeader}>Rider Information</Text>
-        <Text style={styles.riderText}>Name: {riderData.name}</Text>
-        <Text style={styles.riderText}>Contact: {riderData.contact}</Text>
-        <Text style={styles.riderText}>Vehicle: {riderData.vehicle}</Text>
-        <Text style={styles.riderText}>Status: {riderData.deliveryStatus}</Text>
-      </View>
-      <Text style={styles.estimateTime}>
-        Estimated Time: {riderData.estimatedTime}
-      </Text>
 
-      <Text style={styles.header}>Order Summary</Text>
+      {/* Rider Information Section */}
+      <View style={[styles.riderContainer, darkMode ? styles.darkRiderContainer : styles.lightRiderContainer]}>
+        <Text style={[styles.riderHeader, darkMode ? styles.darkText : styles.lightText]}>
+          Rider Information
+        </Text>
+        <Text style={[styles.riderText, darkMode ? styles.darkText : styles.lightText]}>
+          Name: {riderData.name}
+        </Text>
+        <Text style={[styles.riderText, darkMode ? styles.darkText : styles.lightText]}>
+          Contact: {riderData.contact}
+        </Text>
+        <Text style={[styles.riderText, darkMode ? styles.darkText : styles.lightText]}>
+          Vehicle: {riderData.vehicle}
+        </Text>
+        <Text style={[styles.riderText, darkMode ? styles.darkText : styles.lightText]}>
+          Status: {riderData.deliveryStatus}
+        </Text>
+      </View>
+
+      {/* <Text style={[styles.estimateTime, darkMode ? styles.darkText : styles.estimatedTime]}>
+        Estimated Time: {riderData.estimatedTime}
+      </Text> */}
+
+      <Text style={[styles.header, darkMode ? styles.darkText : styles.lightText]}>Order Summary</Text>
 
       <FlatList
         data={items}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.foodId.toString()}
         renderItem={({item}) => (
-          <View style={styles.itemContainer}>
+          <View style={[styles.itemContainer, darkMode ? styles.darkItemContainer : styles.lightItemContainer]}>
             <Image
               source={{
                 uri: `https://pos7.paktech24.com/images/FoodImages//${item.foodImageName}`,
@@ -58,22 +72,32 @@ const OrderDelivery = () => {
               style={styles.itemImage}
             />
             <View style={styles.itemDetails}>
-              <Text style={styles.itemName}>{item.foodName}</Text>
-              <Text style={styles.itemVariant}>Variant: {item.variant}</Text>
+              <Text style={[styles.itemName, darkMode ? styles.darkText : styles.lightText]}>
+                {item.foodName}
+              </Text>
+              <Text style={[styles.itemVariant, darkMode ? styles.darkText : styles.lightText]}>
+                Variant: {item.variant}
+              </Text>
               <View style={styles.quantityPriceContainer}>
-                <Text style={styles.itemQuantity}>
+                <Text style={[styles.itemQuantity, darkMode ? styles.darkText : styles.lightText]}>
                   Quantity: {item.quantity}
                 </Text>
-                <Text style={styles.itemPrice}>Price: ${item.price}</Text>
+                <Text style={[styles.itemPrice, darkMode ? styles.darkText : styles.lightText]}>
+                  Price: Rs{item.price}
+                </Text>
               </View>
             </View>
           </View>
         )}
       />
 
-      <View style={styles.summaryContainer}>
-        <Text style={styles.summaryText}>Total Items: {totalQuantity}</Text>
-        <Text style={styles.summaryText}>Total Price: ${totalPrice}</Text>
+      <View style={[styles.summaryContainer, darkMode ? styles.darkSummaryContainer : styles.lightSummaryContainer]}>
+        <Text style={[styles.summaryText, darkMode ? styles.darkText : styles.lightText]}>
+          Total Items: {totalQuantity}
+        </Text>
+        <Text style={[styles.summaryText, darkMode ? styles.darkText : styles.lightText]}>
+          Total Price: Rs{totalPrice}
+        </Text>
       </View>
 
       <TouchableOpacity style={styles.confirmButton}>
@@ -88,8 +112,13 @@ export default OrderDelivery;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 16,
+  },
+  lightContainer: {
+    backgroundColor: '#fff',
+  },
+  darkContainer: {
+    backgroundColor: '#1a1a1a',
   },
   backButton: {
     width: 35,
@@ -105,11 +134,16 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flexDirection: 'row',
-    backgroundColor: '#f9f9f9',
     borderRadius: 8,
     padding: 16,
     marginBottom: 12,
     elevation: 3,
+  },
+  lightItemContainer: {
+    backgroundColor: '#f9f9f9',
+  },
+  darkItemContainer: {
+    backgroundColor: '#333',
   },
   itemImage: {
     width: 80,
@@ -147,8 +181,13 @@ const styles = StyleSheet.create({
   summaryContainer: {
     marginTop: 10,
     padding: 10,
-    backgroundColor: '#fcd4b8',
     borderRadius: 8,
+  },
+  lightSummaryContainer: {
+    backgroundColor: '#fcd4b8',
+  },
+  darkSummaryContainer: {
+    backgroundColor: '#444',
   },
   summaryText: {
     fontSize: 18,
@@ -156,10 +195,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   riderContainer: {
-    marginVertical: 10, // Add spacing between the rider info and the rest of the content
+    marginVertical: 10,
     padding: 10,
-    backgroundColor: '#fcd4b8',
     borderRadius: 8,
+  },
+  lightRiderContainer: {
+    backgroundColor: '#fcd4b8',
+  },
+  darkRiderContainer: {
+    backgroundColor: '#444',
   },
   riderHeader: {
     fontSize: 16,
@@ -190,4 +234,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
   },
+  darkText: {
+    color: '#fff',
+  },
+  lightText: {
+    color: 'gray',
+  },
+  estimatedTime:{
+    color:'000'
+  }
 });

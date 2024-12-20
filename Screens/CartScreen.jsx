@@ -8,21 +8,22 @@ import {
   View,
 } from 'react-native';
 import * as Icon from 'react-native-feather';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {clearCart, removeFromCart} from '../redux/CartSlice';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearCart, removeFromCart } from '../redux/CartSlice';
 
 const CartScreen = () => {
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   const navigation = useNavigation();
-  const cartItems = useSelector(state => state.cart.items);
+  const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
+  const darkMode = useSelector((state) => state.theme.darkMode);
 
   // Calculate totals
   const getSubtotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
-      0,
+      0
     );
   };
 
@@ -30,90 +31,107 @@ const CartScreen = () => {
     return getSubtotal() + 14; // Assuming $14 for the delivery fee
   };
 
+  const dynamicStyles = darkMode ? styles.dark : styles.light;
+
   return (
-    <View style={styles.container}>
-      {/* Back button section */}
+    <View style={[styles.container, dynamicStyles.container]}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
-          <Icon.ArrowLeft stroke="white" strokeWidth={3} />
+          <Icon.ArrowLeft stroke={dynamicStyles.iconColor} strokeWidth={3} />
         </TouchableOpacity>
-        <View>
-          <Text style={styles.headerText}>Your Cart</Text>
-        </View>
+        <Text style={[styles.headerText, dynamicStyles.headerText]}>Your Cart</Text>
       </View>
 
-      {/* Delivery info section */}
-      <View style={styles.deliveryInfo}>
+      {/* Delivery Info */}
+      <View style={[styles.deliveryInfo, dynamicStyles.deliveryInfo]}>
         <Image
           style={styles.deliveryImage}
           source={require('../Assets/images/BikeGuy.png')}
         />
-        <Text style={styles.deliveryText}>Delivery in 20 - 30 minutes</Text>
+        <Text style={[styles.deliveryText, dynamicStyles.deliveryText]}>
+          Delivery in 20 - 30 minutes
+        </Text>
         <TouchableOpacity>
-          <Text style={styles.changeText}>Change</Text>
+          <Text style={[styles.changeText, dynamicStyles.changeText]}>Change</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Dishes section */}
+      {/* Cart Items */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}>
         {cartItems.length > 0 ? (
           cartItems.map((dish, index) => (
-            <View style={styles.dishContainer} key={index}>
-              <Text style={styles.dishQuantity}>{dish.quantity} x</Text>
+            <View style={[styles.dishContainer, dynamicStyles.dishContainer]} key={index}>
+              <Text style={[styles.dishQuantity, dynamicStyles.dishQuantity]}>
+                {dish.quantity} x
+              </Text>
               <Image
                 style={styles.dishImage}
-                source={{uri: `${BASE_IMAGE_URL}${dish.foodImageName}`}} // Append the image name to BASE_IMAGE_URL
+                source={{ uri: `${BASE_IMAGE_URL}${dish.foodImageName}` }}
               />
-              <Text style={styles.dishName}>{dish.foodName}</Text>
-              <Text style={styles.dishVariant}>{dish.variant}</Text>
-              <Text style={styles.dishPrice}>${dish.price}</Text>
+              <Text style={[styles.dishName, dynamicStyles.dishName]}>
+                {dish.foodName}
+              </Text>
+              <Text style={[styles.dishVariant, dynamicStyles.dishVariant]}>
+                {dish.variant}
+              </Text>
+              <Text style={[styles.dishPrice, dynamicStyles.dishPrice]}>
+              Rs{dish.price}
+              </Text>
               <TouchableOpacity
                 style={styles.iconButton}
-                onPress={() => dispatch(removeFromCart(dish.foodId))} // Use foodId instead of id
+                onPress={() => dispatch(removeFromCart(dish.foodId))}
               >
                 <Icon.Minus
                   strokeWidth={2}
                   height={20}
                   width={20}
-                  stroke="white"
+                  stroke={dynamicStyles.iconColor}
                 />
               </TouchableOpacity>
             </View>
           ))
         ) : (
-          <Text style={styles.emptyCartText}>Your cart is empty</Text>
+          <Text style={[styles.emptyCartText, dynamicStyles.emptyCartText]}>
+            Your cart is empty
+          </Text>
         )}
       </ScrollView>
-      {/* Conditional Clear Cart or Go for Ordering */}
+
+      {/* Clear Cart or Go for Ordering */}
       {cartItems.length > 0 ? (
-        <Text style={styles.clearCartText} onPress={() => dispatch(clearCart())}>
+        <Text
+          style={[styles.clearCartText, dynamicStyles.clearCartText]}
+          onPress={() => dispatch(clearCart())}>
           Clear Cart
         </Text>
       ) : (
         <Text
-          style={styles.goForOrderingText}
+          style={[styles.goForOrderingText, dynamicStyles.goForOrderingText]}
           onPress={() => navigation.navigate('Home')}>
           Go for Ordering
         </Text>
       )}
 
-      {/* Total section */}
-      <View style={styles.totalContainer}>
+      {/* Total */}
+      <View style={[styles.totalContainer, dynamicStyles.totalContainer]}>
         <View style={styles.totalRow}>
-          <Text>Subtotal</Text>
-          <Text>${getSubtotal()}</Text>
+          <Text style={dynamicStyles.totalText}>Subtotal</Text>
+          <Text style={dynamicStyles.totalText}>Rs{getSubtotal()}</Text>
         </View>
         <View style={styles.totalRow}>
-          <Text>Delivery Fee</Text>
-          <Text>$14</Text>
+          <Text style={dynamicStyles.totalText}>Delivery Fee</Text>
+          <Text style={dynamicStyles.totalText}>Rs14</Text>
         </View>
         <View style={styles.totalRow}>
-          <Text style={styles.totalText}>Order Total</Text>
-          <Text style={styles.totalText}>${getTotal()}</Text>
+          <Text style={[styles.totalText, dynamicStyles.totalText]}>Order Total</Text>
+          <Text style={[styles.totalText, dynamicStyles.totalText]}>
+          Rs{getTotal()}
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.placeOrderButton}
@@ -130,7 +148,6 @@ export default CartScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   header: {
     paddingVertical: 10,
@@ -148,7 +165,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black',
     textAlign: 'center',
   },
   deliveryInfo: {
@@ -157,11 +173,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: '#fcd4b8',
     marginHorizontal: 10,
     marginVertical: 10,
     shadowColor: '#fac6a2',
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 8,
@@ -175,7 +190,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 12,
     fontSize: 16,
-    color: '#333',
   },
   changeText: {
     fontSize: 16,
@@ -192,11 +206,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderRadius: 10,
-    backgroundColor: 'white',
     marginBottom: 6,
     marginHorizontal: 10,
     shadowColor: '#fac6a2',
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 8,
@@ -217,12 +230,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
   },
   dishPrice: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
     paddingLeft: 8,
   },
   clearCartText: {
@@ -249,7 +260,6 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     padding: 12,
-    backgroundColor: '#fcd4b8',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   },
@@ -275,6 +285,102 @@ const styles = StyleSheet.create({
   emptyCartText: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#333',
+  },
+
+  // Dark Mode Styles
+  dark: {
+    container: {
+      backgroundColor: '#121212',
+    },
+    headerText: {
+      color: 'white',
+    },
+    deliveryInfo: {
+      backgroundColor: '#2a2a2a',
+    },
+    deliveryText: {
+      color: 'white',
+    },
+    changeText: {
+      color: '#f97316',
+    },
+    dishContainer: {
+      backgroundColor: '#1f1f1f',
+    },
+    dishQuantity: {
+      color: '#f97316',
+    },
+    dishName: {
+      color: 'white',
+    },
+    dishVariant: {
+      color: '#aaaaaa',
+    },
+    dishPrice: {
+      color: 'white',
+    },
+    clearCartText: {
+      color: 'white',
+    },
+    goForOrderingText: {
+      color: '#f97316',
+    },
+    totalContainer: {
+      backgroundColor: '#2a2a2a',
+    },
+    totalText: {
+      color: 'white',
+    },
+    iconColor: 'white',
+    emptyCartText:{
+      color:'gray'
+    },
+  },
+
+  // Light Mode Styles
+  light: {
+    container: {
+      backgroundColor: 'white',
+    },
+    headerText: {
+      color: 'black',
+    },
+    deliveryInfo: {
+      backgroundColor: '#fcd4b8',
+    },
+    deliveryText: {
+      color: '#333',
+    },
+    changeText: {
+      color: '#f97316',
+    },
+    dishContainer: {
+      backgroundColor: 'white',
+    },
+    dishQuantity: {
+      color: '#f97316',
+    },
+    dishName: {
+      color: '#333',
+    },
+    dishVariant: {
+      color: 'gray',
+    },
+    dishPrice: {
+      color: '#333',
+    },
+    clearCartText: {
+      color: 'red',
+    },
+    goForOrderingText: {
+      color: '#f97316',
+    },
+    totalContainer: {
+      backgroundColor: '#fcd4b8',
+    },
+    totalText: {
+      color: '#333',
+    },
+    iconColor: 'white',
   },
 });

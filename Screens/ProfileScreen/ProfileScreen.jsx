@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import * as Icon from 'react-native-feather';
+import { useSelector } from 'react-redux';
 
 // Dummy data
 const userData = {
@@ -16,43 +17,44 @@ const userData = {
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const profileImage = require('../../Assets/images/DeliveryBoy.gif'); // Local image
+  const darkMode = useSelector(state => state.theme.darkMode);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, darkMode && styles.containerDark]}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Icon.ArrowLeft strokeWidth={3} stroke="white" />
+        <Icon.ArrowLeft strokeWidth={3} stroke= "white"/>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Profile Image */}
         <Image source={profileImage} style={styles.profileImage} />
 
         {/* User Information */}
-        <Text style={styles.userName}>{userData.name}</Text>
-        <Text style={styles.userEmail}>{userData.email}</Text>
+        <Text style={[styles.userName, darkMode && styles.userNameDark]}>{userData.name}</Text>
+        <Text style={[styles.userEmail, darkMode && styles.userEmailDark]}>{userData.email}</Text>
 
         {/* Additional Info */}
-        <View style={styles.infoContainer}>
+        <View style={[styles.infoContainer, darkMode && styles.infoContainerDark]}>
           <View style={styles.infoRow}>
-            <Icon.MapPin stroke="gray" width={20} height={20} />
-            <Text style={styles.infoText}>{userData.location}</Text>
+            <Icon.MapPin stroke={darkMode ? "white" : "gray"} width={20} height={20} />
+            <Text style={[styles.infoText, darkMode && styles.infoTextDark]}>{userData.location}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Icon.Phone stroke="gray" width={20} height={20} />
-            <Text style={styles.infoText}>{userData.phone}</Text>
+            <Icon.Phone stroke={darkMode ? "white" : "gray"} width={20} height={20} />
+            <Text style={[styles.infoText, darkMode && styles.infoTextDark]}>{userData.phone}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Icon.Calendar stroke="gray" width={20} height={20} />
-            <Text style={styles.infoText}>Joined: {userData.joinedDate}</Text>
+            <Icon.Calendar stroke={darkMode ? "white" : "gray"} width={20} height={20} />
+            <Text style={[styles.infoText, darkMode && styles.infoTextDark]}>Joined: {userData.joinedDate}</Text>
           </View>
         </View>
 
         {/* Edit Profile Button */}
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity style={[styles.editButton, darkMode && styles.editButtonDark]}>
           <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={[styles.logoutButton, darkMode && styles.logoutButtonDark]}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -68,6 +70,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: 15,
     paddingHorizontal: 15,
+  },
+  containerDark: {
+    backgroundColor: '#121212',
   },
   backButton: {
     backgroundColor: '#f97316',
@@ -94,10 +99,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
+  userNameDark: {
+    color: 'white',
+  },
   userEmail: {
     fontSize: 16,
     color: 'gray',
     marginBottom: 20,
+  },
+  userEmailDark: {
+    color: '#b0b0b0',
   },
   infoContainer: {
     width: '100%',
@@ -105,6 +116,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fcd4b8',
     borderRadius: 10,
     marginBottom: 20,
+  },
+  infoContainerDark: {
+    backgroundColor: '#333333',
   },
   infoRow: {
     flexDirection: 'row',
@@ -115,6 +129,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
   },
+  infoTextDark: {
+    color: 'white',
+  },
   editButton: {
     width: '90%',
     padding: 15,
@@ -123,6 +140,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5,
   },
+  editButtonDark: {
+    backgroundColor: '#1e7e34', // Darker green for dark mode
+  },
   logoutButton: {
     width: '90%',
     padding: 15,
@@ -130,6 +150,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c3e50', // Dark slate gray for Logout button
     alignItems: 'center',
     marginVertical: 5,
+  },
+  logoutButtonDark: {
+    backgroundColor: '#34495e', // Slightly darker slate for dark mode
   },
   buttonText: {
     color: 'white',

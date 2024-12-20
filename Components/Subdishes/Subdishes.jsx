@@ -9,9 +9,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
- 
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {addToCart} from '../../redux/CartSlice';
 import CartIcon from '../cartIcon/cartIcon';
 
@@ -20,18 +19,17 @@ const SubDishes = ({route}) => {
   const dispatch = useDispatch();
   const {subDishes, dishName, dishImage} = route.params;
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
+  const darkMode = useSelector(state => state.theme.darkMode); // Get dark mode state from Redux
 
-  // State for managing modal visibility and selected item
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [counter, setCounter] = useState(1); // Counter for item quantity
- 
+  const [counter, setCounter] = useState(1);
 
   const handleAddToCart = item => {
     const itemToAdd = {...item, quantity: counter};
     dispatch(addToCart(itemToAdd));
     alert(`${item.foodName} has been added to your cart!`);
-    setModalVisible(false); // Close modal after adding to cart
+    setModalVisible(false);
   };
 
   const handleCounterChange = operation => {
@@ -43,13 +41,16 @@ const SubDishes = ({route}) => {
   };
 
   const handleModal = item => {
-    setSelectedItem(item); // Set selected item
-    setCounter(1); // Reset counter to 1
-    setModalVisible(true); // Open modal
+    setSelectedItem(item);
+    setCounter(1);
+    setModalVisible(true);
   };
 
+  const themeStyles = darkMode ? darkTheme : lightTheme;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, themeStyles.container]}>
+      {/* Main Content */}
       <View style={styles.imageContainer}>
         <Image
           source={
@@ -64,22 +65,26 @@ const SubDishes = ({route}) => {
           style={styles.backButton}>
           <Icon.ArrowLeft strokeWidth={3} stroke="#fff" />
         </TouchableOpacity>
-         {/* Cart Icon positioned at the right corner */}
-         <TouchableOpacity
-             // Navigate to CartScreen when clicked
-            style={styles.cartIconContainer}
-          >
-            <CartIcon onPress={() => navigation.navigate('Cart')} style={styles.cartIcon} />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.cartIconContainer}>
+          <CartIcon
+            onPress={() => navigation.navigate('Cart')}
+            style={styles.cartIcon}
+          />
+        </TouchableOpacity>
       </View>
-      <View style={styles.subDishesContainer}>
-        <Text style={styles.title}>{dishName} - Variants</Text>
+
+      {/* Sub Dish List */}
+      <View style={[styles.subDishesContainer, themeStyles.subDishesContainer]}>
+        <Text style={[styles.title, themeStyles.title]}>
+          {dishName} - Variants
+        </Text>
         {subDishes.length > 0 ? (
           <FlatList
             data={subDishes}
             keyExtractor={item => item.foodId.toString()}
             renderItem={({item}) => (
-              <View style={styles.subDishContainer}>
+              <View
+                style={[styles.subDishContainer, themeStyles.subDishContainer]}>
                 <Image
                   style={styles.image}
                   source={
@@ -89,13 +94,18 @@ const SubDishes = ({route}) => {
                   }
                 />
                 <View style={styles.textContainer}>
-                  <Text style={styles.name}>{item.foodName}</Text>
-                  <Text style={styles.description}>{item.variant}</Text>
-                  <Text style={styles.price}>${item.price}</Text>
+                  <Text style={[styles.name, themeStyles.name]}>
+                    {item.foodName}
+                  </Text>
+                  <Text style={[styles.description, themeStyles.description]}>
+                    {item.variant}
+                  </Text>
+                  <Text style={[styles.price, themeStyles.price]}>
+                    ${item.price}
+                  </Text>
                 </View>
-                {/* Add to Cart Button */}
                 <TouchableOpacity
-                  style={styles.addToCartButton}
+                  style={[styles.addToCartButton, themeStyles.addToCartButton]}
                   onPress={() => handleModal(item)}>
                   <Text style={styles.addToCartText}>View Details</Text>
                 </TouchableOpacity>
@@ -111,15 +121,15 @@ const SubDishes = ({route}) => {
         )}
       </View>
 
-      {/* Modal for showing subdish details */}
+      {/* Modal */}
       {selectedItem && (
         <Modal
           visible={modalVisible}
           animationType="slide"
           transparent={true}
           onRequestClose={() => setModalVisible(false)}>
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
+          <View style={themeStyles.modalBackground}>
+            <View style={themeStyles.modalContainer}>
               <Image
                 source={
                   selectedItem.foodImageName
@@ -128,7 +138,9 @@ const SubDishes = ({route}) => {
                 }
                 style={styles.modalImage}
               />
-              <Text style={styles.modalFoodName}>{selectedItem.foodName}</Text>
+              <Text style={[styles.modalFoodName, themeStyles.modalFoodName]}>
+                {selectedItem.foodName}
+              </Text>
               <Text style={styles.modalDescription}>
                 {selectedItem.variant}
               </Text>
@@ -147,7 +159,10 @@ const SubDishes = ({route}) => {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                style={styles.modalAddToCartButton}
+                style={[
+                  styles.modalAddToCartButton,
+                  themeStyles.modalAddToCartButton,
+                ]}
                 onPress={() => handleAddToCart(selectedItem)}>
                 <Icon.ShoppingCart stroke="white" strokeWidth={2} />
                 <Text style={styles.modalAddToCartText}>Add to Cart</Text>
@@ -156,8 +171,8 @@ const SubDishes = ({route}) => {
                 onPress={() => setModalVisible(false)}
                 style={styles.closeModalButton}>
                 <Icon.X
-                  stroke="white"
-                  with={25}
+                  stroke={darkMode ? '#fff' : 'black'}
+                  width={25}
                   height={25}
                   style={styles.closeModalText}
                 />
@@ -169,10 +184,152 @@ const SubDishes = ({route}) => {
     </View>
   );
 };
+
+const lightTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    color: '#000',
+  },
+  subDishesContainer: {
+    backgroundColor: '#fff',
+  },
+  title: {
+    color: '#333',
+  },
+  subDishContainer: {
+    backgroundColor: '#fff',
+  },
+  name: {
+    color: '#333',
+  },
+  description: {
+    color: '#777',
+  },
+  price: {
+    color: '#f97316',
+  },
+  addToCartButton: {
+    backgroundColor: '#f97316',
+  },
+  modalFoodName: {
+    color: '#333',
+  },
+  modalAddToCartButton: {
+    backgroundColor: '#f97316',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    width: '80%',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+  },
+  modalDescription: {
+    fontSize: 16,
+    marginVertical: 10,
+  },
+  modalPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  modalAddToCartButton: {
+    backgroundColor: '#f97316',
+    padding: 12,
+    width: '100%',
+    marginTop: 20,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  modalAddToCartText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+});
+
+const darkTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#000',
+    color: '#fff',
+  },
+  subDishesContainer: {
+    backgroundColor: '#333',
+  },
+  title: {
+    color: '#fff',
+  },
+  subDishContainer: {
+    backgroundColor: '#444',
+  },
+  name: {
+    color: '#fff',
+  },
+  description: {
+    color: '#bbb',
+  },
+  price: {
+    color: '#f97316',
+  },
+  addToCartButton: {
+    backgroundColor: '#f97316',
+  },
+  modalFoodName: {
+    color: '#fff',
+  },
+  modalAddToCartButton: {
+    backgroundColor: '#f97316',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalContainer: {
+    backgroundColor: '#444',
+    padding: 20,
+    width: '80%',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+  },
+  modalDescription: {
+    fontSize: 16,
+    marginVertical: 10,
+  },
+  modalPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  modalAddToCartText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   imageContainer: {
     position: 'relative',
@@ -193,18 +350,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    zIndex: 1, // Ensure it's on top of other content
+    zIndex: 1,
     borderRadius: 100,
-    justifyContent:'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  cartIcon: {
-    // Adjust cart icon size if necessary
-  },
+  cartIcon: {},
   subDishesContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
     marginTop: -40,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -214,13 +368,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#333',
   },
   subDishContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    marginHorizontal: 2,
     marginBottom: 3,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -242,124 +393,112 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   description: {
     fontSize: 14,
-    color: '#777',
     marginVertical: 4,
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#f97316',
   },
   addToCartButton: {
-    backgroundColor: '#f97316', // Orange background
     borderRadius: 50,
-    padding: 10,
+    padding: 8,
+    backgroundColor: '#f97316',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 8,
   },
   addToCartText: {
-    color: 'white',
+    color: '#fff',
+    fontSize: 16,
   },
   noItemsContainer: {
-    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
   noItemsText: {
-    color: 'red',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#555',
   },
-
-  // Modal Styles
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     padding: 20,
+    width: '80%',
     borderRadius: 10,
     alignItems: 'center',
-    width: '80%',
   },
   modalImage: {
     width: 150,
     height: 150,
-    borderRadius: 8,
-    marginBottom: 16,
+    borderRadius: 10,
   },
   modalFoodName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    marginVertical: 10,
   },
   modalDescription: {
     fontSize: 16,
-    color: '#777',
-    marginBottom: 8,
+    marginVertical: 10,
   },
   modalPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#f97316',
-    marginBottom: 16,
+    marginVertical: 10,
   },
   counterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginVertical: 10,
   },
   counterButton: {
     backgroundColor: '#f97316',
     borderRadius: 50,
-    padding: 10,
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  counterText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  counter: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  modalAddToCartButton: {
-    backgroundColor: '#f97316',
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginBottom: 16,
-    flexDirection: 'row',
+    padding: 5,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  counterText: {
+    fontSize: 24,
+    color: '#fff',
+  },
+  counter: {
+    fontSize: 20,
+    marginHorizontal: 10,
+  },
+  modalAddToCartButton: {
+    backgroundColor: '#f97316',
+    padding: 12,
+    width: '100%',
+    marginTop: 20,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   modalAddToCartText: {
-    color: 'white',
-    fontSize: 18,
-    marginLeft: 8,
-    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 10,
   },
   closeModalButton: {
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: '#f97316', // Transparent background
-    padding: 8,
-    borderRadius: 50, // Rounded button
+  },
+  closeModalText: {
+    fontSize: 24,
+    color: '#fff',
   },
 });
 

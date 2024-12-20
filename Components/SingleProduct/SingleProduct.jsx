@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { ArrowLeft } from 'react-native-feather'; // Direct import
-import { useDispatch } from 'react-redux'; // Import useDispatch
+import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
 import { addToCart } from '../../redux/CartSlice';
-
 
 const SingleProduct = ({ route, navigation }) => {
   const { item = {} } = route.params || {}; // Safeguard against undefined params
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch(); // Initialize the dispatch function
+  const isDarkMode = useSelector((state) => state.theme.darkMode); // Get dark mode state from Redux
+
+  // Dynamic Styles
+  const dynamicStyles = isDarkMode ? darkTheme : lightTheme;
 
   const handleAddToCart = () => {
     const product = {
@@ -21,14 +24,13 @@ const SingleProduct = ({ route, navigation }) => {
     dispatch(addToCart(product)); // Dispatch the addToCart action
     alert(`${item.foodName} added to cart!`);
     navigation.navigate('Home');
-    
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, dynamicStyles.container]}>
       {/* Back Button */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <ArrowLeft strokeWidth={3} stroke="#fff" />
+        <ArrowLeft strokeWidth={3} stroke= '#fff'/>
       </TouchableOpacity>
 
       {/* Product Image */}
@@ -42,40 +44,76 @@ const SingleProduct = ({ route, navigation }) => {
       />
 
       {/* Product Details */}
-      <Text style={styles.title}>{item.foodName || 'No food name'}</Text>
-      <Text style={styles.price}>Price: ${item.price || '0.00'}</Text>
-      <Text style={styles.description}>{item.branchName || 'No branch specified'}</Text>
+      <Text style={[styles.title, dynamicStyles.text]}>{item.foodName || 'No food name'}</Text>
+      <Text style={[styles.price, dynamicStyles.text]}>Price: ${item.price || '0.00'}</Text>
+      <Text style={[styles.description, dynamicStyles.text]}>
+        {item.branchName || 'No branch specified'}
+      </Text>
 
       {/* Counter */}
       <View style={styles.counterContainer}>
         <TouchableOpacity
           onPress={() => setQuantity(Math.max(1, quantity - 1))}
-          style={styles.counterButton}
+          style={[styles.counterButton, dynamicStyles.counterButton]}
         >
           <Text style={styles.counterText}>-</Text>
         </TouchableOpacity>
         <Text style={styles.quantity}>{quantity}</Text>
         <TouchableOpacity
           onPress={() => setQuantity(quantity + 1)}
-          style={styles.counterButton}
+          style={[styles.counterButton, dynamicStyles.counterButton]}
         >
           <Text style={styles.counterText}>+</Text>
         </TouchableOpacity>
       </View>
 
       {/* Add to Cart Button */}
-      <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+      <TouchableOpacity
+        style={[styles.addToCartButton, dynamicStyles.addToCartButton]}
+        onPress={handleAddToCart}
+      >
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+// Define the light and dark theme styles
+const lightTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+  },
+  text: {
+    color: '#000',
+  },
+  counterButton: {
+    backgroundColor: '#f97316',
+  },
+  addToCartButton: {
+    backgroundColor: '#f97316',
+  },
+});
+
+const darkTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#333',
+  },
+  text: {
+    color: '#fff',
+  },
+  counterButton: {
+    backgroundColor: '#f97316',
+  },
+  addToCartButton: {
+    backgroundColor: '#f97316',
+  },
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     padding: 16,
-    backgroundColor: 'white',
   },
   backButton: {
     position: 'absolute',
@@ -115,7 +153,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   counterButton: {
-    backgroundColor: '#f97316',
     padding: 10,
     borderRadius: 100,
     width: 40,
@@ -133,7 +170,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   addToCartButton: {
-    backgroundColor: '#f97316',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',

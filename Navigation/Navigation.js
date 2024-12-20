@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../Screens/HomeScreen';
 import RestaurantScreen from '../Screens/RestaurantScreen';
@@ -14,10 +14,12 @@ import SubDishes from '../Components/Subdishes/Subdishes.jsx';
 import SignInScreen from '../Screens/SignInScreen/SignInScreen.jsx';
 import SignUpScreen from '../Screens/SignUpScreen/SignUpScreen.jsx';
 import SingleProduct from '../Components/SingleProduct/SingleProduct.jsx';
+import { useSelector } from 'react-redux';
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
+  const isDarkMode = useSelector((state) => state.theme.darkMode); // Get theme state
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Stack.Navigator screenOptions={{
         headerShown:false,
       }}>

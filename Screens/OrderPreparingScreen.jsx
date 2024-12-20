@@ -1,9 +1,11 @@
-import {Image, StyleSheet, View} from 'react-native';
-import React, {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import { Image, StyleSheet, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const OrderPreparingScreen = () => {
   const navigation = useNavigation();
+  const darkMode = useSelector((state) => state.theme.darkMode);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -15,7 +17,7 @@ const OrderPreparingScreen = () => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, darkMode && styles.darkContainer]}>
       <Image
         style={styles.image}
         source={require('../Assets/images/BikeGuy.png')}
@@ -32,6 +34,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
+  },
+  darkContainer: {
+    backgroundColor: '#333', // Dark background color for dark mode
   },
   image: {
     height: 180,

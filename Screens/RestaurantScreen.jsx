@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, { useCallback } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {useNavigation, useRoute } from '@react-navigation/native';
 import * as Icon from 'react-native-feather';
 import DishRow from '../Components/DishRow';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ const RestaurantScreen = () => {
   const { branchName, address, branchLogoName, id, description, star, review, category } = params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const darkMode = useSelector((state) => state.theme.darkMode); // Get dark mode state from Redux
 
   const { productVariants = [], status } = useSelector((state) => state.data); // Default to empty array if undefined
 
@@ -32,82 +33,76 @@ const RestaurantScreen = () => {
       if (id) {
         dispatch(fetchFoodCategoriesByBranchId(id)); // Fetch categories for the restaurant's branch
       }
-    }, [id, dispatch]) // <-- Dependencies ensure fetch is tied to id and dispatch
+    }, [id, dispatch])
   );
 
-  // Show loading spinner if the data is still loading
   if (status === 'loading') {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer]}>
         <ActivityIndicator size="large" color="#f97316" />
       </View>
     );
   }
 
+  const themeStyles = darkMode ? darkTheme : lightTheme;
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={'light-content'} hidden={true} />
+    <View style={[styles.container, themeStyles.container]}>
+      {/* <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} hidden={true} /> */}
       <ScrollView>
-        {/* Restaurant Banner */}
         <View style={styles.imageContainer}>
-          {/* Restaurant Logo Image */}
           <Image
             style={styles.image}
             source={
               branchLogoName
-                ? { uri: `${BASE_IMAGE_URL}${branchLogoName}` } // Use the URL if it exists
-                : require('../Assets/restaurants/download.jpeg') // Fallback to local image
+                ? { uri: `${BASE_IMAGE_URL}${branchLogoName}` }
+                : require('../Assets/restaurants/download.jpeg')
             }
           />
-
-          {/* Back Button */}
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
             <Icon.ArrowLeft strokeWidth={3} stroke="#fff" />
           </TouchableOpacity>
-
-          {/* Cart Icon positioned at the right corner */}
           <TouchableOpacity
-             // Navigate to CartScreen when clicked
             style={styles.cartIconContainer}
           >
             <CartIcon onPress={() => navigation.navigate('Cart')} style={styles.cartIcon} />
           </TouchableOpacity>
         </View>
 
-        {/* Restaurant Details */}
-        <View style={styles.detailsContainer}>
+        <View style={[styles.detailsContainer, themeStyles.detailsContainer]}>
           <View style={styles.headerContainer}>
-            <Text style={styles.restaurantName}>{branchName}</Text>
+            <Text style={[styles.restaurantName, themeStyles.text]}>{branchName}</Text>
             <View style={styles.ratingRow}>
               <View style={styles.ratingContainer}>
                 <Icon.Star fill="gold" stroke="gold" height={15} width={15} />
-                <Text style={styles.ratingText}>{star}</Text>
+                <Text style={[styles.ratingText, themeStyles.text]}>{star}</Text>
                 <Text style={styles.review}>
                   ({review} reviews) -{' '}
-                  <Text style={styles.category}>{category}</Text>
+                  <Text style={[styles.category, themeStyles.text]}>{category}</Text>
                 </Text>
               </View>
               <View style={styles.locationContainer}>
                 <Icon.MapPin color="gray" width={15} height={15} />
-                <Text style={styles.locationText}>Nearby. {address}</Text>
+                <Text style={[styles.locationText, themeStyles.text]}>Nearby. {address}</Text>
               </View>
             </View>
-            <Text style={styles.description}>{description}</Text>
+            <Text style={[styles.description, themeStyles.description]}>{description}</Text>
           </View>
         </View>
 
-        {/* Menu Section */}
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuTitle}>Menu</Text>
+        <View style={[styles.menuContainer, themeStyles.container]}>
+          <Text style={[styles.menuTitle, themeStyles.text]}>Menu</Text>
           {productVariants.length > 0 ? (
             productVariants.map((dish) => (
               <DishRow key={dish.id} item={{ ...dish }} />
             ))
           ) : (
-            <Text style={styles.noDishesText}>Sorry No dishes available for this restaurant.</Text>
+            <Text style={[styles.noDishesText, themeStyles.text]}>
+              Sorry No dishes available for this restaurant.
+            </Text>
           )}
         </View>
       </ScrollView>
@@ -117,6 +112,37 @@ const RestaurantScreen = () => {
 
 export default RestaurantScreen;
 
+const lightTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+  },
+  detailsContainer: {
+    backgroundColor: '#f9f9f9',
+  },
+  text: {
+    color: '#000',
+  },
+  description: {
+    color: '#555',
+  },
+});
+
+const darkTheme = StyleSheet.create({
+  container: {
+    backgroundColor: '#121212',
+  },
+  detailsContainer: {
+    backgroundColor: '#1e1e1e',
+  },
+  text: {
+    color: '#fff',
+  },
+  description: {
+    color: '#aaa',
+  },
+ 
+});
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,12 +151,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white', // Optional background color for the loading screen
+
   },
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: 200, // Ensure the image container has a defined height for positioning
+    height: 200,
   },
   image: {
     width: '100%',
@@ -148,18 +174,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    zIndex: 1, // Ensure it's on top of other content
-    borderRadius: 100,
-    justifyContent:'center',
-    alignItems: 'center',
-  },
-  cartIcon: {
-    // Adjust cart icon size if necessary
+    zIndex: 1,
   },
   detailsContainer: {
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    backgroundColor: 'white',
     marginTop: -35,
     paddingTop: 16,
   },
@@ -169,7 +188,6 @@ const styles = StyleSheet.create({
   restaurantName: {
     fontSize: 20,
     fontWeight: '500',
-    color: 'black',
     marginBottom: 10,
   },
   ratingRow: {
@@ -183,7 +201,6 @@ const styles = StyleSheet.create({
   ratingText: {
     marginLeft: 4,
     fontSize: 14,
-    color: 'green',
   },
   review: {
     marginLeft: 4,
@@ -192,7 +209,6 @@ const styles = StyleSheet.create({
   },
   category: {
     fontWeight: '500',
-    color: 'black',
   },
   locationContainer: {
     flexDirection: 'row',
@@ -200,28 +216,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   locationText: {
-    color: 'gray',
     fontSize: 12,
     marginLeft: 4,
   },
   description: {
     marginTop: 8,
-    color: 'gray',
     fontSize: 14,
   },
   menuContainer: {
-    backgroundColor: 'white',
+    paddingHorizontal: 16,
   },
   menuTitle: {
-    padding: 16,
     fontSize: 20,
     fontWeight: '500',
-    color: 'black',
   },
   noDishesText: {
-    padding: 16,
-    fontSize: 14,
-    color: 'red',
     textAlign: 'center',
+    marginTop: 10,
   },
 });

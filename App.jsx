@@ -1,28 +1,37 @@
-import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { Provider } from 'react-redux';
-import store from './store'; // Adjust the path as necessary
+import React, {useEffect, useState} from 'react';
+// import {StyleSheet, View} from 'react-native';
+import {Provider} from 'react-redux';
+import store from './store';
 import Navigation from './Navigation/Navigation';
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from 'react-native-splash-screen';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
+  // const [isDarkMode, setIsDarkMode] = useState(false);
+
   useEffect(() => {
-    // Set a timeout to hide the splash screen after 3 seconds (3000 milliseconds)
+    // Load saved theme state
+    // const loadTheme = async () => {
+    //   const savedTheme = await AsyncStorage.getItem('isDarkMode');
+    //   setIsDarkMode(savedTheme === 'true');
+    // };
+    // loadTheme();
+
+    // Hide the splash screen
     const timer = setTimeout(() => {
       SplashScreen.hide();
     }, 3000);
 
-    // Cleanup function to clear the timeout if the component unmounts
     return () => clearTimeout(timer);
   }, []);
 
+
+
   return (
     <Provider store={store}>
-      <Navigation />
+        <Navigation />
     </Provider>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({});
