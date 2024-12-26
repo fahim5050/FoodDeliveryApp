@@ -152,7 +152,7 @@ const HomeScreen = () => {
                           {item.foodName}
                         </Text>
                         <Text style={themeStyles.priceText}>
-                          Price: ${item.price}
+                          Price: Rs{item.price}
                         </Text>
                         <Text style={themeStyles.restaurantName}>
                           {item.branchName}

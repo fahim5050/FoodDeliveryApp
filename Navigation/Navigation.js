@@ -11,10 +11,11 @@ import AllRestaurant from '../Screens/AllRestaurant';
 import ProfileScreen from '../Screens/ProfileScreen/ProfileScreen.jsx';
 import NotificationScreen from '../Screens/NotificationScreen/NotificationScreen.jsx';
 import SubDishes from '../Components/Subdishes/Subdishes.jsx';
-import SignInScreen from '../Screens/SignInScreen/SignInScreen.jsx';
+// import SignInScreen from '../Screens/SignInScreen/SignInScreen.jsx';
 import SignUpScreen from '../Screens/SignUpScreen/SignUpScreen.jsx';
 import SingleProduct from '../Components/SingleProduct/SingleProduct.jsx';
 import { useSelector } from 'react-redux';
+import EditProfileScreen from '../Screens/EditProfileScreen/EditProfileScreen.jsx';
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
   const isDarkMode = useSelector((state) => state.theme.darkMode); // Get theme state
@@ -31,6 +32,7 @@ const Navigation = () => {
       <Stack.Screen name="Delivery" component={DeliveryScreen} />
       <Stack.Screen name="AllRestaurant" component={AllRestaurant} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="Notifications" component={NotificationScreen} />
       <Stack.Screen name="SubDishes" component={SubDishes} />
       <Stack.Screen name="SingleProduct" component={SingleProduct} />

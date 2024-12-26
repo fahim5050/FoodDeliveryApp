@@ -78,9 +78,9 @@ const DishRow = ({ item }) => {
               <Text style={[styles.dishName, themeStyles.dishName]}>
                 {item.name}
               </Text>
-              <Text style={[styles.dishDescription, themeStyles.dishDescription]}>
+              {/* <Text style={[styles.dishDescription, themeStyles.dishDescription]}>
                 {item.createdDate}
-              </Text>
+              </Text> */}
             </View>
           </View>
         </>

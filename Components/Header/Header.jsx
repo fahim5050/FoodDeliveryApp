@@ -8,7 +8,7 @@ import { toggleTheme } from '../../redux/ThemeSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Header = ({
-  userName = 'Fahim',
+  userName = 'Fahim ud din',
   userImage,
   notificationCount = 4,
   cartCount,

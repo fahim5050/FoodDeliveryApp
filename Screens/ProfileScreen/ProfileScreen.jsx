@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import * as Icon from 'react-native-feather';
 import { useSelector } from 'react-redux';
 
 // Dummy data
 const userData = {
-  name: 'John Doe',
-  email: 'johndoe@example.com',
-  location: 'New York, USA',
+  name: 'Fahim ud din ',
+  email: 'fahimsiraj5050@gmail.com',
+  location: 'peshawar pakistan',
   phone: '+1 234 567 890',
   joinedDate: 'January 1, 2023'
 };
@@ -18,6 +18,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const profileImage = require('../../Assets/images/DeliveryBoy.gif'); // Local image
   const darkMode = useSelector(state => state.theme.darkMode);
+
 
   return (
     <SafeAreaView style={[styles.container, darkMode && styles.containerDark]}>
@@ -49,13 +50,20 @@ const ProfileScreen = () => {
         </View>
 
         {/* Edit Profile Button */}
-        <TouchableOpacity style={[styles.editButton, darkMode && styles.editButtonDark]}>
-          <Text style={styles.buttonText}>Edit Profile</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+  onPress={() => {
+    
+      navigation.navigate('EditProfile'); // Ensures navigation happens after the render
+  }}
+  style={[styles.editButton, darkMode && styles.editButtonDark]}
+>
+  <Text style={styles.buttonText}>Edit Profile</Text>
+</TouchableOpacity>
+
 
         {/* Logout Button */}
         <TouchableOpacity style={[styles.logoutButton, darkMode && styles.logoutButtonDark]}>
-          <Text style={styles.buttonText}>Logout</Text>
+          <Text style={styles.buttonText} >Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

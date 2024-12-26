@@ -45,7 +45,7 @@ const SingleProduct = ({ route, navigation }) => {
 
       {/* Product Details */}
       <Text style={[styles.title, dynamicStyles.text]}>{item.foodName || 'No food name'}</Text>
-      <Text style={[styles.price, dynamicStyles.text]}>Price: ${item.price || '0.00'}</Text>
+      <Text style={[styles.price, dynamicStyles.text]}>Price: Rs{item.price || '0.00'}</Text>
       <Text style={[styles.description, dynamicStyles.text]}>
         {item.branchName || 'No branch specified'}
       </Text>
@@ -56,9 +56,9 @@ const SingleProduct = ({ route, navigation }) => {
           onPress={() => setQuantity(Math.max(1, quantity - 1))}
           style={[styles.counterButton, dynamicStyles.counterButton]}
         >
-          <Text style={styles.counterText}>-</Text>
+          <Text style={styles.counterText }>-</Text>
         </TouchableOpacity>
-        <Text style={styles.quantity}>{quantity}</Text>
+        <Text style={[styles.quantity,dynamicStyles.text]}>{quantity}</Text>
         <TouchableOpacity
           onPress={() => setQuantity(quantity + 1)}
           style={[styles.counterButton, dynamicStyles.counterButton]}
@@ -104,6 +104,8 @@ const darkTheme = StyleSheet.create({
   counterButton: {
     backgroundColor: '#f97316',
   },
+ 
+
   addToCartButton: {
     backgroundColor: '#f97316',
   },

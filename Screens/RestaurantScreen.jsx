@@ -96,8 +96,8 @@ const RestaurantScreen = () => {
         <View style={[styles.menuContainer, themeStyles.container]}>
           <Text style={[styles.menuTitle, themeStyles.text]}>Menu</Text>
           {productVariants.length > 0 ? (
-            productVariants.map((dish) => (
-              <DishRow key={dish.id} item={{ ...dish }} />
+            productVariants.map((dish, index) => (
+              <DishRow key={dish.id || `unique-${index}`} item={dish} />
             ))
           ) : (
             <Text style={[styles.noDishesText, themeStyles.text]}>

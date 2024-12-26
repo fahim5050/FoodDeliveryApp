@@ -101,7 +101,7 @@ const SubDishes = ({route}) => {
                     {item.variant}
                   </Text>
                   <Text style={[styles.price, themeStyles.price]}>
-                    ${item.price}
+                    Rs{item.price}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -141,17 +141,17 @@ const SubDishes = ({route}) => {
               <Text style={[styles.modalFoodName, themeStyles.modalFoodName]}>
                 {selectedItem.foodName}
               </Text>
-              <Text style={styles.modalDescription}>
+              <Text style={[styles.modalDescription,themeStyles.title]}>
                 {selectedItem.variant}
               </Text>
-              <Text style={styles.modalPrice}>${selectedItem.price}</Text>
+              <Text style={[styles.modalPrice,themeStyles.title]}>Rs{selectedItem.price}</Text>
               <View style={styles.counterContainer}>
                 <TouchableOpacity
                   onPress={() => handleCounterChange('decrement')}
                   style={styles.counterButton}>
                   <Text style={styles.counterText}>-</Text>
                 </TouchableOpacity>
-                <Text style={styles.counter}>{counter}</Text>
+                <Text style={[styles.counter,themeStyles.title]}>{counter}</Text>
                 <TouchableOpacity
                   onPress={() => handleCounterChange('increment')}
                   style={styles.counterButton}>
@@ -244,16 +244,16 @@ const lightTheme = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
   },
-  modalAddToCartButton: {
-    backgroundColor: '#f97316',
-    padding: 12,
-    width: '100%',
-    marginTop: 20,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
+  // modalAddToCartButton: {
+  //   backgroundColor: '#f97316',
+  //   padding: 12,
+  //   width: '100%',
+  //   marginTop: 20,
+  //   borderRadius: 50,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   flexDirection: 'row',
+  // },
   modalAddToCartText: {
     color: '#fff',
     fontSize: 16,
