@@ -10,7 +10,12 @@ const store = configureStore({
     cart: cartReducer, // Add cartReducer to manage cart state
     theme: themeReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+   // Disabling the serializableStateInvariantMiddleware
+   middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableStateInvariant: false,
+    }),
 });
 
 export default store;

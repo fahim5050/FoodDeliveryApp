@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -30,7 +31,14 @@ const CartScreen = () => {
   const getTotal = () => {
     return getSubtotal() + 14; // Assuming $14 for the delivery fee
   };
-
+ // Function to handle placing order
+ const handlePlaceOrder = () => {
+  if (cartItems.length === 0) {
+    Alert.alert("Cart is Empty", "Your cart is empty, please add items to place an order.");
+  } else {
+    navigation.navigate('OrderPreparing');
+  }
+};
   const dynamicStyles = darkMode ? styles.dark : styles.light;
 
   return (
@@ -135,7 +143,7 @@ const CartScreen = () => {
         </View>
         <TouchableOpacity
           style={styles.placeOrderButton}
-          onPress={() => navigation.navigate('OrderPreparing')}>
+          onPress={handlePlaceOrder}>
           <Text style={styles.placeOrderText}>Place Order</Text>
         </TouchableOpacity>
       </View>
