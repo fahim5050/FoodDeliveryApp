@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { ArrowLeft } from 'react-native-feather'; // Direct import
-import { useDispatch, useSelector } from 'react-redux'; // Import useDispatch and useSelector
-import { addToCart } from '../../redux/CartSlice';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {ArrowLeft} from 'react-native-feather'; // Direct import
+import {useDispatch, useSelector} from 'react-redux'; // Import useDispatch and useSelector
+import {addToCart} from '../../redux/CartSlice';
 
-const SingleProduct = ({ route, navigation }) => {
-  const { item = {} } = route.params || {}; // Safeguard against undefined params
+const SingleProduct = ({route, navigation}) => {
+  const {item = {}} = route.params || {}; // Safeguard against undefined params
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch(); // Initialize the dispatch function
-  const isDarkMode = useSelector((state) => state.theme.darkMode); // Get dark mode state from Redux
+  const isDarkMode = useSelector(state => state.theme.darkMode); // Get dark mode state from Redux
 
   // Dynamic Styles
   const dynamicStyles = isDarkMode ? darkTheme : lightTheme;
@@ -21,31 +21,40 @@ const SingleProduct = ({ route, navigation }) => {
       quantity,
       foodImageName: item.foodImageName,
     };
+    const branchId = item.branchId;
     dispatch(addToCart(product)); // Dispatch the addToCart action
     alert(`${item.foodName} added to cart!`);
-    navigation.navigate('Home');
+    navigation.navigate('Restaurant', branchId);
   };
 
   return (
     <View style={[styles.container, dynamicStyles.container]}>
       {/* Back Button */}
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <ArrowLeft strokeWidth={3} stroke= '#fff'/>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}>
+        <ArrowLeft strokeWidth={3} stroke="#fff" />
       </TouchableOpacity>
 
       {/* Product Image */}
       <Image
         source={
           item.foodImageName
-            ? { uri: `https://pos7.paktech24.com/images/FoodImages/${item.foodImageName}` }
+            ? {
+                uri: `https://pos7.paktech24.com/images/FoodImages/${item.foodImageName}`,
+              }
             : require('../../Assets/images/profile.jpg')
         }
         style={styles.image}
       />
 
       {/* Product Details */}
-      <Text style={[styles.title, dynamicStyles.text]}>{item.foodName || 'No food name'}</Text>
-      <Text style={[styles.price, dynamicStyles.text]}>Price: Rs{item.price || '0.00'}</Text>
+      <Text style={[styles.title, dynamicStyles.text]}>
+        {item.foodName || 'No food name'}
+      </Text>
+      <Text style={[styles.price, dynamicStyles.text]}>
+        Price: Rs{item.price || '0.00'}
+      </Text>
       <Text style={[styles.description, dynamicStyles.text]}>
         {item.branchName || 'No branch specified'}
       </Text>
@@ -54,15 +63,13 @@ const SingleProduct = ({ route, navigation }) => {
       <View style={styles.counterContainer}>
         <TouchableOpacity
           onPress={() => setQuantity(Math.max(1, quantity - 1))}
-          style={[styles.counterButton, dynamicStyles.counterButton]}
-        >
-          <Text style={styles.counterText }>-</Text>
+          style={[styles.counterButton, dynamicStyles.counterButton]}>
+          <Text style={styles.counterText}>-</Text>
         </TouchableOpacity>
-        <Text style={[styles.quantity,dynamicStyles.text]}>{quantity}</Text>
+        <Text style={[styles.quantity, dynamicStyles.text]}>{quantity}</Text>
         <TouchableOpacity
           onPress={() => setQuantity(quantity + 1)}
-          style={[styles.counterButton, dynamicStyles.counterButton]}
-        >
+          style={[styles.counterButton, dynamicStyles.counterButton]}>
           <Text style={styles.counterText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -70,8 +77,7 @@ const SingleProduct = ({ route, navigation }) => {
       {/* Add to Cart Button */}
       <TouchableOpacity
         style={[styles.addToCartButton, dynamicStyles.addToCartButton]}
-        onPress={handleAddToCart}
-      >
+        onPress={handleAddToCart}>
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>
     </View>
@@ -104,7 +110,6 @@ const darkTheme = StyleSheet.create({
   counterButton: {
     backgroundColor: '#f97316',
   },
- 
 
   addToCartButton: {
     backgroundColor: '#f97316',

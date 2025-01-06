@@ -33,6 +33,7 @@ const RestaurantScreen = () => {
       if (id) {
         dispatch(fetchFoodCategoriesByBranchId(id)); // Fetch categories for the restaurant's branch
       }
+      // console.log('restaurant id is=',id);
     }, [id, dispatch])
   );
 

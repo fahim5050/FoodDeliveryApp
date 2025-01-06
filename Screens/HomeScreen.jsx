@@ -90,7 +90,7 @@ const HomeScreen = () => {
         barStyle={'light-content'}
         backgroundColor={themeStyles.container.lightBackgroundColor}
       />
-
+{/* header of the home screen */}
       <View style={styles.headerContainer}>
         <Header />
       </View>
@@ -165,7 +165,7 @@ const HomeScreen = () => {
             )}
           </View>
         )}
-
+{/* categories of the home screen */}
         <Categories />
 
         <ScrollView contentContainerStyle={styles.scrollableContent}>

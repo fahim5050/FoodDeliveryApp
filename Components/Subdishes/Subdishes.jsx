@@ -20,12 +20,25 @@ const SubDishes = ({route}) => {
   const {subDishes, dishName, dishImage} = route.params;
   const BASE_IMAGE_URL = 'https://pos7.paktech24.com/images/FoodImages/';
   const darkMode = useSelector(state => state.theme.darkMode); // Get dark mode state from Redux
+  const cartItems = useSelector((state) => state.cart.items);  // Get the current cart items from the Redux store
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [counter, setCounter] = useState(1);
 
   const handleAddToCart = item => {
+  if (cartItems.length > 0) {
+    const existingBranchId = cartItems[0].branchId;
+    const existingBranchName = cartItems[0].branchName; // Assuming branchName is part of cart item
+    // Check if the branchId of the item being added matches the existing branchId
+    if (existingBranchId !== item.branchId) {
+      alert(`You can only add items from the same restaurant: ${existingBranchName}.`);
+      return;
+    }
+  }
+
+  // Proceed to add the item if the branchId matches or the cart is empty
+
     const itemToAdd = {...item, quantity: counter};
     dispatch(addToCart(itemToAdd));
     alert(`${item.foodName} has been added to your cart!`);
